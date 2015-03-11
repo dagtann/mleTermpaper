@@ -1,0 +1,133 @@
+<<>>=
+## --- Setup workspace ------------------------------------------
+rm(list = ls())
+packs <- c('ggplot2', 'ggthemes', 'reshape2')
+lapply(packs, library, character.only = TRUE)
+rm(packs)
+load('./out/models.Rdata')
+## --- define preliminaries -------------------------------------
+add <- function(x) { Reduce("+", x)/length(x) }
+## Uncomment for example
+# exList <- list(
+#   imp1 = matrix(2:5, ncol = 2), 
+#   imp2 = matrix(3:6, ncol = 2),
+#   imp3 = matrix(4:7, ncol = 2)
+# )
+# exList; add(exList)
+## function to average of cell entries in 3dim array
+pred.train <- vector('list', length = n.folds)
+for(j in 1:n.folds){         ## extract training data predictions
+  for(dv in erDvs){
+    pred.train[[j]][[dv]] <- lapply(
+      mod.train[[j]][[dv]], FUN = function(x){ 
+        fitted(x, type = 'probs')
+      }
+    )
+  }
+}
+ylevels <- as.character(2:7)               ## dv reference levels
+absLossTrain <- vector('list', length = erVars)     ## train loss
+absLossTest <- vector('list', length = n.folds)      ## test loss  
+
+## --- Training absolute loss -----------------------------------
+for(j in 1:n.folds){                        ## consider all folds
+  for(dv in erDvs){
+    for(i in 1:length(dta.files)){    ## for each fold extract data
+      y.train <- mod.train[[j]][[dv]][[i]][['model']][, dv]
+      y.train <- as.numeric(y.train)       ## and setup a matrix of 
+                              ## binary indicators for comparison
+      y.mat <- matrix(
+        NA, nrow = length(y.train), ncol = length(ylevels)
+      )
+      colnames(y.mat) <- ylevels
+      for(k in ylevels){
+        y.mat[, k] <- ifelse(y.train == k, 1, 0)
+      }
+      absLossTrain[[j]][[dv]] <- sum(
+        abs(add(pred.train[[j]][[dv]])-y.mat), na.rm = TRUE
+      )
+    }
+  }
+}
+absLossTrain
+
+## --- Test absolute loss -----------------------------------
+for(j in 1:n.folds){                        ## consider all folds
+  for(dv in erDvs){
+    for(i in 1:length(dta.files)){    ## for each fold extract data
+      y.test <- dta.list[[i]][
+        dta.list[[i]][, 'fold'] == j, dv
+      ] 
+      y.test <- as.numeric(y.test)       ## and setup a matrix of 
+                              ## binary indicators for comparison
+      y.mat <- matrix(
+        NA, nrow = length(y.test), ncol = length(ylevels)
+      )
+      colnames(y.mat) <- ylevels
+      for(k in ylevels){
+        y.mat[, k] <- ifelse(y.test == k, 1, 0)
+      }
+      absLossTest[[j]][[dv]] <- sum(
+        abs(add(mod.test[[j]][[dv]])-y.mat), na.rm = TRUE
+      )
+    }
+  }
+}
+absLossTest
+rm(i, j, k, dv, y.mat, y.test, y.train)
+
+
+## --- Proceed to plotting --------------------------------------
+names(absLossTrain) <- paste0('fold', 1:10)
+pdta <- do.call(rbind.data.frame, absLossTrain)
+head(pdta)
+listNames <- row.names(pdta)
+listNames <- strsplit(listNames, '.', fixed = TRUE)
+pdta <- within(pdta, {
+  depVar <- sapply(listNames, "[", 1)
+  varNames <- sapply(listNames, "[", 2)
+  }
+)
+head(pdta)
+
+pdta <- data.frame(
+  absLossTrain, absLossTest, 
+  data.frame(table(fold))
+)
+p <- ggplot(
+  data = pdta, 
+  aes(x = absLossTrain, y = absLossTest)
+) +
+geom_point(aes(size = Freq)) +
+geom_rangeframe() +
+geom_text(aes(label = fold), hjust = -.8, vjust = 1) +
+scale_x_tufte(
+  labels = function(x) { format(x, digits = 1, nsmall = 1) }
+) + 
+scale_y_tufte(
+  labels = function(x) { format(x, digits = 1, nsmall = 1) }
+) + 
+scale_size(range = c(3, 5), breaks = seq(150, 200, 10)) +
+guides(size = guide_legend(shape = 1)) +
+labs(
+  x = 'Within-Sample Absolute Loss',
+  y = 'Out-of-Sample Absolute Loss',
+  size = 'Fold size'
+) +
+theme_tufte() +
+theme(
+  legend.background = element_blank(),
+  legend.direction = 'horizontal',
+  legend.position = c(.27, 1.02),
+  legend.background = element_rect(fill = 'transparent'),
+  legend.key = element_blank(),
+  panel.border = element_blank()
+)
+
+ggsave(plot = p, file = './out/figPointAbsLoss.pdf',
+  width = 7, height = 7/1.618, dpi = 1200, 
+  family = 'serif'
+)
+rm(p, pdta)
+## END
+@

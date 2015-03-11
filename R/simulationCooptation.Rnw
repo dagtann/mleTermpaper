@@ -1,0 +1,104 @@
+<<>>=
+rm(list =ls())
+load('./out/models.Rdata') 
+set.seed(8590)
+library('MASS'); library('ggplot2')
+add <- function(x) { Reduce("+", x)/length(x) }
+## --- Define scenarios --------------------------------------------
+scenario.dta <- expand.grid(
+  fh_ordinal = mean(dta.list[[1]][, 'fh_ordinal'], na.rm = TRUE),
+  cooptation = 0:3,             
+  prio_conflict_intra = mean(dta.list[[1]][, 'prio_conflict_intra'], na.rm = TRUE),
+  prio_conflict_inter = mean(dta.list[[1]][, 'prio_conflict_inter'], na.rm = TRUE),
+  gled_lpop = mean(dta.list[[1]][, 'gled_lpop'], na.rm = TRUE),
+  gled_lgdppc = mean(dta.list[[1]][, 'gled_lgdppc'], na.rm = TRUE),
+  geddes_personal = 0,
+  geddes_monarch = 0,
+  geddes_party = 1,
+  wdi_tradegdp = mean(dta.list[[1]][, 'wdi_tradegdp'], na.rm = TRUE),
+  coldwar = 1,
+  wdi_gdppcgrowth = mean(dta.list[[1]][, 'wdi_gdppcgrowth'], na.rm = TRUE),
+  archigos_durationLin = mean(dta.list[[1]][, 'archigos_durationLin'], na.rm = TRUE),
+  archigos_durationSqu = mean(dta.list[[1]][, 'archigos_durationSqu'], na.rm = TRUE),
+  archigos_durationCub = mean(dta.list[[1]][, 'archigos_durationCub'], na.rm = TRUE),
+  archigos_pastleaderfail = mean(dta.list[[1]][, 'archigos_pastleaderfail'], na.rm = TRUE),
+  powthy_pastattempts = mean(dta.list[[1]][, 'powthy_pastattempts'], na.rm = TRUE),
+  pseudologross = mean(dta.list[[1]][, 'pseudologross'], na.rm = TRUE),
+  election = 1,
+  banks_genstrike = mean(dta.list[[1]][, 'banks_genstrike'], na.rm = TRUE),
+  banks_riot = mean(dta.list[[1]][, 'banks_riot'], na.rm = TRUE),
+  banks_antigovdem = mean(dta.list[[1]][, 'banks_antigovdem'], na.rm = TRUE),
+  flip_ciri_phys = mean(dta.list[[1]][, 'flip_ciri_phys'], na.rm = TRUE)
+)
+for(i in c('1|2', '2|3', '3|4', '4|5', '5|6', '6|7')){
+  scenario.dta[, i] <- 0  
+}
+## --- Define simulation store holders --------------------------
+N = 1000
+fold.pred <- vector('list', length = 10)
+names(fold.pred) <- paste0('fold', 1:10)
+beta.pred <- list()
+
+## --- Simulate -------------------------------------------------
+for(j in 1:n.folds){
+  mu <- add(lapply(mod.train[[j]], coef))
+  cuts <- add(lapply(mod.train[[j]], function(j) { j[['zeta']] } ))
+  mu <- c(mu, cuts)
+  sigma <- add(lapply(mod.train[[j]], vcov))
+  beta.pred[[j]] <- mvrnorm(n = N, mu = mu, Sigma = sigma)
+  fold.pred[[j]] <- t(beta.pred[[j]] %*% t(scenario.dta))
+}
+
+library('plyr')
+df <- ldply(fold.pred, data.frame)
+df[, 'cooptation'] <- 0:3
+detach(package:plyr)
+
+library('reshape2')
+pdta <- melt(df, 
+  id.vars = c('cooptation', '.id'),
+  measure.vars = 2:1000
+)
+detach(package:reshape2)
+
+names(pdta) <- c("cooptation", "fold", "variable", "value")
+pdta <- within(pdta, 
+  fold <- factor(fold, levels = paste0('fold', 1:10), 
+    labels = paste('Fold', 1:10, sep = ' ')
+  )
+)
+
+p <- qplot(data = pdta, x = cooptation, y = value, alpha = .2,
+  geom = 'point'
+) + 
+stat_summary(
+  aes(group = fold), 
+  fun.y = 'mean', 
+  colour = 'red', geom = 'point', alpha = 1, size = 3) +
+stat_summary(
+  aes(group = fold), 
+  fun.data = 'median_hilow', 
+  colour = 'red', geom = 'linerange', alpha = 1
+) +
+labs(
+  x = 'Level of Co-optation',
+  y = 'Density'
+) +
+guides(alpha = 'none', size = 'none') +
+facet_wrap(~fold) +
+theme_bw() +
+theme(
+  legend.position = c(.1, 1.04),
+  legend.key = element_blank(),
+  legend.direction = 'horizontal',
+  legend.background = element_rect(fill = 'transparent'),
+  panel.border = element_blank()
+)
+ggsave(
+  plot = p,
+  file = './out/simCooptation.pdf',
+  width = 14, height = 14/1.618, dpi = 1200, family = 'serif'
+)
+rm(p)
+## END
+@
