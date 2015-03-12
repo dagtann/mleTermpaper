@@ -6,4 +6,5 @@ meanArray <- function(x) { Reduce("+", x)/length(x) }
 #   imp3 = matrix(4:7, ncol = 2)
 # )
 # exList; add(exList)
-## function to average of cell entries in 3dim array
+## function to average over cell entries in 3dim array
+## no missing allowed!

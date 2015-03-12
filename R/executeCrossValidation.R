@@ -2,7 +2,6 @@
 n.folds <- 10                       ## folds for cross-validation
 ## Data imputed, original data cannot be restored --> Define 
 ## folds once and brute force into each data set
-set.seed(8590)
 fold <- sample(
   1:n.folds, size = nrow(dta.list[[1]]), replace = TRUE
 )

@@ -12,4 +12,13 @@ invisible(lapply(packs, library, character.only = TRUE))
 ## --- Load user defined functions ------------------------------
 source(file.path(pathCode, 'userFunc', 'meanArray.R'))
 
+## --- declare global options -----------------------------------
+options(help_type = 'html')
+set.seed(8590)
+
+## --- source builds --------------------------------------------
+#source(file.path(pathCode, 'dataBuild.R'))
+#source(file.path(pathCode, 'executeCrossValidation.R'))
+#source(file.path(pathCode, 'outOfSamplePerformance.R'))
+source(file.path(pathCode, 'simulation1stDifferences.R'), echo = TRUE)
 ## END
