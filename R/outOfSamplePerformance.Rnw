@@ -1,40 +1,33 @@
-<<>>=
-## --- Setup workspace ------------------------------------------
-rm(list = ls())
-packs <- c('ggplot2', 'ggthemes', 'reshape2')
-lapply(packs, library, character.only = TRUE)
-rm(packs)
-load('./out/models.Rdata')
 ## --- define preliminaries -------------------------------------
-add <- function(x) { Reduce("+", x)/length(x) }
-## Uncomment for example
-# exList <- list(
-#   imp1 = matrix(2:5, ncol = 2), 
-#   imp2 = matrix(3:6, ncol = 2),
-#   imp3 = matrix(4:7, ncol = 2)
-# )
-# exList; add(exList)
-## function to average of cell entries in 3dim array
-pred.train <- vector('list', length = n.folds)
-for(j in 1:n.folds){         ## extract training data predictions
-  for(dv in erDvs){
-    pred.train[[j]][[dv]] <- lapply(
-      mod.train[[j]][[dv]], FUN = function(x){ 
-        fitted(x, type = 'probs')
-      }
+pred.er.train <- vector('list', length = length(erDvs))
+names(pred.er.train) <- erDvs
+for(dv in erDvs){            ## extract training data predictions
+  for(j in 1:n.folds){         
+    summary(
+      pred.er.train[[dv]][[paste0('fold', j)]] <- lapply(
+        er.train[[dv]][[j]], 
+        FUN = function(x){ fitted(x, type = 'probs') }
+    )
     )
   }
 }
 ylevels <- as.character(2:7)               ## dv reference levels
-absLossTrain <- vector('list', length = erVars)     ## train loss
-absLossTest <- vector('list', length = n.folds)      ## test loss  
+
+sample.size <- apply(dta.list[[1]][, erDvs], 2, 
+  function(x){ sum(!is.na(x)) }
+)
+
+absLossTrain <- vector('list', length = length(erDvs)) ## train loss
+names(absLossTrain) <- erDvs
+absLossTest <- vector('list', length = length(erDvs)) ## test loss  
+names(absLossTest) <- erDvs
 
 ## --- Training absolute loss -----------------------------------
-for(j in 1:n.folds){                        ## consider all folds
-  for(dv in erDvs){
-    for(i in 1:length(dta.files)){    ## for each fold extract data
-      y.train <- mod.train[[j]][[dv]][[i]][['model']][, dv]
-      y.train <- as.numeric(y.train)       ## and setup a matrix of 
+for(dv in erDvs){
+  for(j in 1:n.folds){                      ## consider all folds
+    for(i in 1:length(dta.files)){  ## for each fold extract data
+      y.train <- er.train[[dv]][[j]][[i]][['model']][, dv]
+      y.train <- as.numeric(y.train)     ## and setup a matrix of 
                               ## binary indicators for comparison
       y.mat <- matrix(
         NA, nrow = length(y.train), ncol = length(ylevels)
@@ -43,21 +36,19 @@ for(j in 1:n.folds){                        ## consider all folds
       for(k in ylevels){
         y.mat[, k] <- ifelse(y.train == k, 1, 0)
       }
-      absLossTrain[[j]][[dv]] <- sum(
-        abs(add(pred.train[[j]][[dv]])-y.mat), na.rm = TRUE
+      absLossTrain[[dv]][[paste0('fold', j)]] <- sum(
+        abs(meanArray(pred.er.train[[dv]][[j]])-y.mat)
       )
     }
   }
 }
 absLossTrain
 
-## --- Test absolute loss -----------------------------------
-for(j in 1:n.folds){                        ## consider all folds
-  for(dv in erDvs){
-    for(i in 1:length(dta.files)){    ## for each fold extract data
-      y.test <- dta.list[[i]][
-        dta.list[[i]][, 'fold'] == j, dv
-      ] 
+## --- Test absolute loss ---------------------------------------
+for(dv in erDvs){
+  for(j in 1:n.folds){                      ## consider all folds
+    for(i in 1:length(dta.files)){  ## for each fold extract data
+      y.test <- dta.list[[i]][ dta.list[[i]][, 'fold'] == j, dv] 
       y.test <- as.numeric(y.test)       ## and setup a matrix of 
                               ## binary indicators for comparison
       y.mat <- matrix(
@@ -67,8 +58,8 @@ for(j in 1:n.folds){                        ## consider all folds
       for(k in ylevels){
         y.mat[, k] <- ifelse(y.test == k, 1, 0)
       }
-      absLossTest[[j]][[dv]] <- sum(
-        abs(add(mod.test[[j]][[dv]])-y.mat), na.rm = TRUE
+      absLossTest[[dv]][[paste0('fold', j)]] <- sum(
+        abs(meanArray(er.test[[dv]][[j]])-y.mat), na.rm = TRUE
       )
     }
   }
@@ -76,45 +67,60 @@ for(j in 1:n.folds){                        ## consider all folds
 absLossTest
 rm(i, j, k, dv, y.mat, y.test, y.train)
 
-
 ## --- Proceed to plotting --------------------------------------
-names(absLossTrain) <- paste0('fold', 1:10)
 pdta <- do.call(rbind.data.frame, absLossTrain)
-head(pdta)
-listNames <- row.names(pdta)
-listNames <- strsplit(listNames, '.', fixed = TRUE)
-pdta <- within(pdta, {
-  depVar <- sapply(listNames, "[", 1)
-  varNames <- sapply(listNames, "[", 2)
-  }
+names(pdta) <- paste0('fold', 1:n.folds)
+pdta[, 'depVar'] <- row.names(pdta)
+pdta <- reshape2::melt(
+  pdta,
+  id.vars = 'depVar',
+  measure.vars = paste0('fold', 1:10),
+  value.name = 'absLossTrain'
 )
-head(pdta)
+test.dta <- do.call(rbind.data.frame, absLossTest)
+names(test.dta) <- paste0('fold', 1:n.folds)
+test.dta[, 'depVar'] <- row.names(test.dta)
+test.dta <- reshape2::melt(
+  test.dta,
+  id.vars = 'depVar',
+  measure.vars = paste0('fold', 1:10),
+  value.name = 'absLossTest'
+)
+pdta <- merge(
+  x = pdta, y = test.dta, by = c('depVar', 'variable')
+)
+rm(test.dta)
 
-pdta <- data.frame(
-  absLossTrain, absLossTest, 
-  data.frame(table(fold))
+pdta[, 'size'] <- NA
+pdta[, 'size'] <- ifelse(
+  pdta[, 'depVar'] == 'lead_fh1', sample.size[1], pdta[, 'size']
 )
+pdta[, 'size'] <- ifelse(
+  pdta[, 'depVar'] == 'lead_fh2', sample.size[2], pdta[, 'size']
+)
+pdta[, 'size'] <- ifelse(
+  pdta[, 'depVar'] == 'lead_fh3', sample.size[3], pdta[, 'size']
+)
+pdta[, 'size'] <- ifelse(
+  pdta[, 'depVar'] == 'lead_fh4', sample.size[4], pdta[, 'size']
+)
+pdta[, 'size'] <- ifelse(
+  pdta[, 'depVar'] == 'lead_fh5', sample.size[5], pdta[, 'size']
+)
+
+## What is an adequate standardization?
 p <- ggplot(
   data = pdta, 
-  aes(x = absLossTrain, y = absLossTest)
+  aes(x = absLossTrain/size, y = absLossTest/size)
 ) +
-geom_point(aes(size = Freq)) +
-geom_rangeframe() +
-geom_text(aes(label = fold), hjust = -.8, vjust = 1) +
-scale_x_tufte(
-  labels = function(x) { format(x, digits = 1, nsmall = 1) }
-) + 
-scale_y_tufte(
-  labels = function(x) { format(x, digits = 1, nsmall = 1) }
-) + 
-scale_size(range = c(3, 5), breaks = seq(150, 200, 10)) +
-guides(size = guide_legend(shape = 1)) +
+geom_point() +
 labs(
   x = 'Within-Sample Absolute Loss',
-  y = 'Out-of-Sample Absolute Loss',
-  size = 'Fold size'
+  y = 'Out-of-Sample Absolute Loss'
 ) +
-theme_tufte() +
+geom_text(aes(label = variable), size = 3) +
+facet_wrap(~ depVar, nrow = 1) +
+theme_bw() +
 theme(
   legend.background = element_blank(),
   legend.direction = 'horizontal',
@@ -123,11 +129,12 @@ theme(
   legend.key = element_blank(),
   panel.border = element_blank()
 )
+p
 
-ggsave(plot = p, file = './out/figPointAbsLoss.pdf',
+ggsave(
+  plot = p, file = file.path(pathOut, 'figPointAbsLoss.pdf'),
   width = 7, height = 7/1.618, dpi = 1200, 
   family = 'serif'
 )
 rm(p, pdta)
 ## END
-@
