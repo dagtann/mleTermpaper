@@ -17,8 +17,9 @@ options(help_type = 'html')
 set.seed(8590)
 
 ## --- source builds --------------------------------------------
-#source(file.path(pathCode, 'dataBuild.R'))
-#source(file.path(pathCode, 'executeCrossValidation.R'))
-#source(file.path(pathCode, 'outOfSamplePerformance.R'))
+# Uncomment for rerun
+# source(file.path(pathCode, 'dataBuild.R'))
+# source(file.path(pathCode, 'executeCrossValidation.R'))
+# source(file.path(pathCode, 'outOfSamplePerformance.R'))
 source(file.path(pathCode, 'simulation1stDifferences.R'), echo = TRUE)
 ## END
