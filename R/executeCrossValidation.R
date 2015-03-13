@@ -1,3 +1,4 @@
+load(file.path(pathOut, 'base.Rdata'))
 ## --- Define fold objects and containers -----------------------
 n.folds <- 10                       ## folds for cross-validation
 ## Data imputed, original data cannot be restored --> Define 

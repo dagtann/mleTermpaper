@@ -7,3 +7,9 @@
 3. Absolute loss was standardized by sample size. Is this step  
     meaningful?
 
+2015/03/13 __Cluster Robust SE__
+
+- Follow King/Roberts 2014 and calculate difference in SEs.
+- Respecify the Autocorrelation and heteroscedasticity 
+  components of fundamental uncertainty
+

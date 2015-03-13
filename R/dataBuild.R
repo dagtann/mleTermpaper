@@ -20,16 +20,21 @@ for(i in 1:length(dta.files)) {
 detach(package:foreign)
 
 erDvs <- paste0('lead_fh', 1:5)         ## empowerment rights dvs
-
+piDvs <- paste0('lead_flip', 1:5)       ## phyiscal integrity dvs
 ## --- clean original data --------------------------------------
 dta.list[[2]] <- dta.list[[2]][  ## Remove single row with all NA
   -which(is.na(dta.list[[2]][, 'archigos_duration'])), 
 ]
 
 for(i in 1:length(dta.files)){
-  for(j in erDvs){                   ## dep var to ordered factor
+  for(j in erDvs){                ## dep var er to ordered factor
     dta.list[[i]][, j] <- factor(
       dta.list[[i]][, j], levels = 2:7, ordered = TRUE
+    )
+  }
+  for(j in piDvs){                ## dep var pi to ordered factor
+    dta.list[[i]][, j] <- factor(
+      dta.list[[i]][, j], levels = 0:8, ordered = TRUE
     )
   }
   dta.list[[i]][, 'geddes_party'] <- factor( ## reg types to fact

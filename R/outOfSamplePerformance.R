@@ -153,8 +153,7 @@ theme(
   legend.direction = 'horizontal',
   legend.position = 'top',
   legend.background = element_rect(fill = 'transparent'),
-  legend.key = element_blank(),
-  panel.border = element_blank()
+  legend.key = element_blank()
 )
 
 library('gridExtra')
