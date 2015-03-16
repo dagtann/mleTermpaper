@@ -6,9 +6,7 @@ library('stargazer')
 
 ## --- Coefficient matrix ---------------------------------------
 ncoef <- length(coef(pi.replicate[[1]][[1]][[1]]))
-ntau <- length(
-  pi.replicate[[1]][[1]][[1]][['zeta']]
-  )
+ntau <- length(pi.replicate[[1]][[1]][[1]][['zeta']])
 ## empty matrix
 piCoefMat <- matrix(NA, 
   nrow = ncoef + ntau,
@@ -49,9 +47,10 @@ N <- vector(length = 6)                      ## obs in regression
 N[1] <- 'N'
 for(i in 1:length(piDvs)){
   N[i+1] <- mean(
-    sapply(pi.replicate[[i]], function(x){ 
-      dim(model.matrix(x[[1]]))[1] 
-    }
+    sapply(             ## -.2 b/c .2 in output otherwise. IDK y.
+      pi.replicate[[i]], 
+      function(x){ dim(model.matrix(x[[1]]))[1]-.2 
+    } 
     )
   )
 }
@@ -105,6 +104,7 @@ stargazer(
   out = file.path(pathOut, 'piBTON.tex'),
   style = 'apsr',  rownames = FALSE, align = FALSE
 )
+detach(package:stargazer)
 rm(
   covar.labs, column.labs, i, N, ctry, logLikelihood, 
   seRobust, piCoefMat

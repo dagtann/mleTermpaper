@@ -103,6 +103,7 @@ stargazer(
   out = file.path(pathOut, 'erBTON.tex'),
   style = 'apsr',  rownames = FALSE, align = FALSE
 )
+detach(package:stargazer)
 rm(
   covar.labs, column.labs, i, N, ctry, logLikelihood, 
   seRobust, erCoefMat

@@ -17,11 +17,16 @@ options(help_type = 'html')
 set.seed(8590)
 
 ## --- source builds --------------------------------------------
-# Uncomment for rerun
-source(file.path(pathCode, 'dataBuild.R'))
-source(file.path(pathCode, 'original', 'publishedAnalysis.R'))
-source(file.path(pathCode, 'original', 'outputRegressionTablesErRepression.R'))
-source(file.path(pathCode, 'original', 'outputRegressionTablesPiRepression.R'))
+# source(file.path(pathCode, 'dataBuild.R'))
+
+## --- Published Results ----------------------------------------
+# source(file.path(pathCode, 'original', 'publishedAnalysis.R'))
+# source(file.path(pathCode, 'original', 'outputRegressionTablesErRepression.R'))
+# source(file.path(pathCode, 'original', 'outputRegressionTablesPiRepression.R'))
+# source(file.path(pathCode, 'original', 'differencesSePi.R'))
+# source(file.path(pathCode, 'original', 'differencesSeEr.R'))
+
+## --- Replication steps ----------------------------------------
 # source(file.path(pathCode, 'executeCrossValidation.R'))
 # source(file.path(pathCode, 'outOfSamplePerformance.R'))
 # source(file.path(pathCode, 'simulation1stDifferences.R'), echo = TRUE)

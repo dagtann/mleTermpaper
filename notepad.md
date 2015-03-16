@@ -12,4 +12,6 @@
 - Follow King/Roberts 2014 and calculate difference in SEs.
 - Respecify the Autocorrelation and heteroscedasticity 
   components of fundamental uncertainty
+- Comparing relative differences of classical and robust se:
+    + Current ER Repression 1.5 to 2.0 increase, Co-optation stable, Past leader fails and Past coups increase 2.0 and more
 
