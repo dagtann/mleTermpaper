@@ -7,11 +7,19 @@
 3. Absolute loss was standardized by sample size. Is this step  
     meaningful?
 
-2015/03/13 __Cluster Robust SE__
+2015/03/16 __Cluster Robust SE__
 
 - Follow King/Roberts 2014 and calculate difference in SEs.
 - Respecify the Autocorrelation and heteroscedasticity 
   components of fundamental uncertainty
 - Comparing relative differences of classical and robust se:
-    + Current ER Repression 1.5 to 2.0 increase, Co-optation stable, Past leader fails and Past coups increase 2.0 and more
+    + Current ER Repression 1.5 to 2.0 increase -> Functional form violated?
+    + Co-optation stable
+    + Past leader fails and Past coups increase 2.0 and more -> Variance inflation?
+
+2015/03/16 __Next Steps__
+- Close up lagged dependent variables -> Use ordered logit, but lagged dv as continuous predictors
+- Create separation plots -> Authors did not specify discriminatory power of their models.
+- Check parallel regressions assumption
+- Create 1st Difference simulations --> What is the predicted effect of co-optation?
 
