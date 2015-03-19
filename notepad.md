@@ -22,4 +22,3 @@
 - Create separation plots -> Authors did not specify discriminatory power of their analyses.
 - Check parallel regressions assumption
 - Create 1st Difference simulations -> How big is the predicted effect of co-optation?
-
