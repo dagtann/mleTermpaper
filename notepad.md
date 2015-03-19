@@ -22,3 +22,10 @@
 - Create separation plots -> Authors did not specify discriminatory power of their analyses.
 - Check parallel regressions assumption
 - Create 1st Difference simulations -> How big is the predicted effect of co-optation?
+
+2015/03/19
+- __Parallel regressions assumption__: All models fail, coefficients wildly flip in sign, effect on pi breaks down completely
+- __archigos_pastleaderfail__: Loess indicates concave down for both sets of dvs, independent effect on fh/ciri, but not required as control --> This is not a control
+- __powthy_pastattempts__: loess fh indicates higher than 2nd degree polynomial, pi not so clear, independent effect on fh/ciri, but not required as control
+
+It should be possible to drop both variables without changing the coefficient on cooptation dramatically.

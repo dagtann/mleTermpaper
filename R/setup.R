@@ -20,11 +20,13 @@ set.seed(8590)
 # source(file.path(pathCode, 'dataBuild.R'))
 
 ## --- Published Results ----------------------------------------
-# source(file.path(pathCode, 'original', 'publishedAnalysis.R'))
-# source(file.path(pathCode, 'original', 'outputRegressionTablesErRepression.R'))
-# source(file.path(pathCode, 'original', 'outputRegressionTablesPiRepression.R'))
-# source(file.path(pathCode, 'original', 'differencesSePi.R'))
-# source(file.path(pathCode, 'original', 'differencesSeEr.R'))
+source(file.path(pathCode, 'original', 'publishedAnalysis.R'))
+source(file.path(pathCode, 'original', 'outputRegressionTablesErRepression.R'))
+source(file.path(pathCode, 'original', 'outputRegressionTablesPiRepression.R'))
+source(file.path(pathCode, 'original', 'differencesSePi.R'))
+source(file.path(pathCode, 'original', 'differencesSeEr.R'))
+source(file.path(pathCode, 'original', 'parallelRegressionsPi.R'))
+source(file.path(pathCode, 'original', 'parallelRegressionsEr.R'))
 
 ## --- Replication steps ----------------------------------------
 # source(file.path(pathCode, 'executeCrossValidation.R'))

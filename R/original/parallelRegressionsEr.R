@@ -86,5 +86,5 @@ ggsave(                                    ## save merged figures
   family = 'serif'
 )
 detach(package:gridExtra)
-rm(p, sub.label, coef.dta)
+rm(p, sub.label, coef.dta, ylevels)
 ## END
