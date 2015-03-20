@@ -1,4 +1,4 @@
-## Preliminaries
+## --- Preliminaries --------------------------------------------
 load(file.path(pathOut, 'omodels.RData'))
 ylevels <- lapply(       ## Check if all levels of response exist
   dta.list, 
@@ -18,15 +18,17 @@ ylevels <- sapply(
     na.omit(sort(unique(as.numeric(as.character(x))))) 
   }
 )
+ylevels <- ylevels[-1, ]
 coef.dta <- expand.grid(piDvs = piDvs,  imp = paste0('imp', 1:5),
-  ylevel = 0:8, coef = NA, se = NA
+  ylevel = 1:8, coef = NA, se = NA
 )
 coef.dta <- coef.dta[with(coef.dta, order(piDvs, imp, ylevel)), ]
 row.names(coef.dta) <- NULL
-count <- 0                        ## counter for rows in coef.dta
 
 ## --- run parallel regression ----------------------------------
 ## You are about to run a bottleneck procedure with 225 regressions
+count <- 0                        ## counter for rows in coef.dta
+options(warn = 1)       ## immediately output warnings if occured
 for(dv in piDvs){                                 ## for every DV
   for(j in 1:length(dta.list)){       ## go through each imp data
     dta <- dta.list[[j]]                          ## pull out dta
@@ -38,20 +40,22 @@ for(dv in piDvs){                                 ## for every DV
       dta[, dv] == as.character(i), 1, 0
     )
     dta[na.count, paste0('ybin', i)] <- NA     ## restore missing
-      fit <- glm(                              ## run logit model
-        as.formula(paste0(paste0('ybin', i), '~', ivTerms)),
-        family = 'binomial', control = list(maxit = 500), 
-        data = dta
-      )
-      coef.dta[count, 'coef'] <- coef(fit)['cooptation']  ## coef
+    print(count); print(dv); print(paste0('dta', j)); print(paste0('ybin', i))
+    fit <- glm(                              ## run logit model
+      as.formula(paste0(paste0('ybin', i), '~', ivTerms)),
+      family = 'binomial', control = list(maxit = 500), 
+      data = dta
+    )
+    coef.dta[count, 'coef'] <- coef(fit)['cooptation']  ## coef
                                           ## store standard error
-      coef.dta[count, 'se'] <- sqrt(diag(vcov(fit)))['cooptation']
+    coef.dta[count, 'se'] <- sqrt(diag(vcov(fit)))['cooptation']
     }
   }
 }
 rm(fit, count, ylevels)
 summary(coef.dta)
-
+options(warn = 0)
+## level 0 dropped from analysis b/c perfect separation occured
 ## --- simplify data for plotting -------------------------------
 coef.dta <- aggregate(
   coef.dta[, c('coef', 'se')],
@@ -81,7 +85,8 @@ geom_linerange(
 geom_hline(
   yintercept = 0, colour = 'black', linetype = 'longdash', size = .3
 ) +
-scale_y_continuous(breaks = seq(-1.5, 1, .5)) +
+scale_x_discrete(limits = as.character(0:8)) +
+scale_y_continuous(breaks = seq(-.5, .5, .25)) +
 facet_grid(.~piDvs) +
 labs(
   y = 'Estimated coefficient on co-optation',
@@ -91,7 +96,7 @@ theme_bw()
 
 library('gridExtra')               ## Add labeling note at bottom
 sub.label <- textGrob(                 
-  'Confidence intervals at the .95 level added.', 
+  'Confidence intervals at the .95 level added. Level 0 was dropped because perfect or quasi-perfect separation occured.', 
   gp = gpar(fontsize = 6), x = unit(1, "npc"), hjust = 1, vjust = 0
 )
 ggsave(                                    ## save merged figures

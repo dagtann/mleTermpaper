@@ -1,5 +1,5 @@
 ## Simulation of ordered logit data
-load(file.path(pathOut, 'models.Rdata'))
+load(file.path(pathOut, 'omodels.RData'))
 ## --- setup scenario data -----------------------------------------
 scenario.dta <- expand.grid(
   fh_ordinal = mean(dta.list[[1]][, 'fh_ordinal'], na.rm = TRUE),
@@ -28,7 +28,7 @@ scenario.dta <- expand.grid(
 )
 scenario.dta <- as.matrix(scenario.dta)
 ## --- simluate coefficients ---------------------------------------
-mod <- er.train[[1]][[1]][[1]]
+mod <- er.replicate[[1]][[1]][[1]]
 betas <- coef(mod)
 tau <- mod[['zeta']]
 sigma <- solve(mod[['Hessian']])
@@ -60,4 +60,5 @@ dta.md <- reshape2::melt(
 ggplot(dta.md, aes(x = value)) +
 geom_line(stat = 'density') +
 geom_vline(xintercept = 0, linetype = 'longdash') +
-facet_wrap(~ variable, scales = 'free')
+theme_linedraw() +
+facet_wrap(~ variable, scales = 'free_y', nrow = 2)

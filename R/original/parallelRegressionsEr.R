@@ -8,14 +8,16 @@ ylevels <- sapply(                         ## unique levels in dv
     na.omit(sort(unique(as.numeric(as.character(x))))) 
   }
 )
+ylevels <- ylevels[-1, ]
 coef.dta <- expand.grid(
   erDvs = erDvs,  imp = paste0('imp', 1:5),
-  ylevel = 2:7, coef = NA, se = NA
+  ylevel = 3:7, coef = NA, se = NA
 )
 coef.dta <- coef.dta[with(coef.dta, order(erDvs, imp, ylevel)), ]
 row.names(coef.dta) <- NULL
 
 ## --- discrete case estimation ---------------------------------
+options(warn = 1)       ## immediately output warnings if occured
 count <- 0
 for(dv in erDvs){               ## for all empowerment rights dvs
   for(j in 1:length(dta.list)){                      ## pull data
@@ -29,14 +31,20 @@ for(dv in erDvs){               ## for all empowerment rights dvs
     dta[na.count, paste0('ybin', i)] <- NA     ## restore missing
     fit <- glm(                          ## run binary regression
       as.formula(paste0(paste0('ybin', i), '~', ivTerms)),
-      family = 'binomial', control = list(maxit = 500), data = dta
+      family = 'binomial', data = dta
     )
     coef.dta[count, 'coef'] <- coef(fit)['cooptation']
     coef.dta[count, 'se'] <- sqrt(diag(vcov(fit)))['cooptation']
+    print(count)
+    rm(fit)
     }
   }
 }
 rm(count, dv, i, j, na.count)
+summary(coef.dta)
+options(warn = 0)
+## Perfect or quasi-perfect separation occurs if FH == 2, dropped
+## as not necessary to make the point.
 
 ## --- simplify data for plotting -------------------------------
 coef.dta <- aggregate(
@@ -66,6 +74,7 @@ geom_linerange(
 geom_hline(
   yintercept = 0, colour = 'black', linetype = 'longdash', size = .3
 ) +
+scale_x_discrete(limits = as.character(2:7)) +
 scale_y_continuous(breaks = seq(-1.5, 1, .5)) +
 facet_grid(.~erDvs) +
 labs(
@@ -76,7 +85,7 @@ theme_bw()
 
 library('gridExtra')               ## Add labeling note at bottom
 sub.label <- textGrob(                 
-  'Confidence intervals at the .95 level added.', 
+  'Confidence intervals at the .95 level added. Level 2 was dropped because perfect or quasi-perfect separation occured.', 
   gp = gpar(fontsize = 6), x = unit(1, "npc"), hjust = 1, vjust = 0
 )
 ggsave(                                    ## save merged figures
