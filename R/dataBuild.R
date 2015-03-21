@@ -15,6 +15,9 @@ for(i in 1:length(dta.files)) {
   dta.list[[i]] <- with(dta.list[[i]], 
     dta.list[[i]][ order(cowcode, year), ]
   )
+  row.names(dta.list[[i]]) <- with(dta.list[[i]], 
+    paste(cowcode, year, sep = ':')
+  )
   names(dta.list)[i] <- paste0('imp', i)
 }
 detach(package:foreign)
