@@ -8,16 +8,6 @@ org.data <- read.dta(
 )
 detach(package:foreign)
 
-for(j in erDvs){                ## dep var er to ordered factor
-  org.data[, j] <- factor(
-    org.data[, j], levels = 2:7, ordered = TRUE
-  )
-}
-for(j in piDvs){                ## dep var pi to ordered factor
-  org.data[, j] <- factor(
-    org.data[, j], levels = 0:8, ordered = TRUE
-  )
-}
 org.data[, 'geddes_party'] <- factor( ## reg types to fact
   org.data[, 'geddes_party'], 
   levels = 0:1, labels = c('No', 'Yes')
@@ -50,8 +40,6 @@ org.data[, 'election'] <- factor(   ## election year dummy
   levels = 0:1, labels = c('No', 'Yes')
 )
 #with(org.data, which(is.na(archigos_duration)))
-
-
 org.data <- org.data[with(org.data, order(cowcode, year)), ]
 
 for(i in 1:length(erDvs)) {
@@ -72,7 +60,7 @@ for(i in 1:length(piDvs)) {
     org.data[, piDvs[i]], levels = 0:8, ordered = TRUE
   )
 }
-
+summary(org.data)
 ## --- Archigos past leadership fail ----------------------------
 dta <- subset(                                   ## vs. er rights
   org.data, select = c(erDvs, 'archigos_pastleaderfail')

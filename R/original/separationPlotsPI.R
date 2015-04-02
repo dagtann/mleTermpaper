@@ -69,8 +69,8 @@ for(dv in piDvs){
       geom_line(size = .3) + 
       guides(fill = 'none') +
       labs(y = count) +
-      scale_fill_manual(values = c('white', '#727272')) +
-      scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, .5)
+      scale_fill_manual(values = c('#f0f0f0', '#9E3173')) +
+      scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, .5), expand = c(.125, 0)
       ) +
       theme_minimal() +
       if(dv == 'lead_flip1'){
@@ -105,16 +105,18 @@ for(dv in piDvs){
 ggsave( ## clumsily wraps all plots in list to single page
   file = file.path(pathOut, paste0('superSeparationPI.pdf')),
   arrangeGrob(
-    do.call(arrangeGrob, c(plotlist[['lead_flip1']], list(ncol = 1, main = textGrob('PI at t+1', vjust = .7)))),
-    do.call(arrangeGrob, c(plotlist[['lead_flip2']], list(ncol = 1, main = textGrob('PI at t+2', vjust = .7)))),
-    do.call(arrangeGrob, c(plotlist[['lead_flip3']], list(ncol = 1, main = textGrob('PI at t+3', vjust = .7)))),
-    do.call(arrangeGrob, c(plotlist[['lead_flip4']], list(ncol = 1, main = textGrob('PI at t+4', vjust = .7)))),
-    do.call(arrangeGrob, c(plotlist[['lead_flip5']], list(ncol = 1, main = textGrob('PI at t+5', vjust = .7)))),
+    do.call(arrangeGrob, c(plotlist[['lead_flip1']], list(ncol = 1, main = textGrob('  t+1', vjust = .7)))),
+    do.call(arrangeGrob, c(plotlist[['lead_flip2']], list(ncol = 1, main = textGrob('t+2', vjust = .7)))),
+    do.call(arrangeGrob, c(plotlist[['lead_flip3']], list(ncol = 1, main = textGrob('t+3', vjust = .7)))),
+    do.call(arrangeGrob, c(plotlist[['lead_flip4']], list(ncol = 1, main = textGrob('t+4', vjust = .7)))),
+    do.call(arrangeGrob, c(plotlist[['lead_flip5']], list(ncol = 1, main = textGrob('t+5', vjust = .7)))),
     ncol = 5
   ),
-  width = 7, height = 7/1.618, family = 'serif'
+  width = 3.5, height = 3/1.618, family = 'sans'
 )
 ## --- clean up -------------------------------------------------
+detach(package:gridExtra)
+detach(package:grid)
 rm(list = c(
   'dv', 'i', 'plotlist', 'yhat', 'yobs', 'ymat', 'ylevels', 'k', 
   'count', 'ydf',  

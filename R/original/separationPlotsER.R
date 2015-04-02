@@ -5,7 +5,7 @@ load(file.path(pathOut, 'omodels.RData'))
 plotlist <- list()
 
 for(dv in erDvs){
-## --- pull and prepare predicted probabilities -----------------
+  ## --- pull and prepare predicted probabilities ---------------
   yhat <- lapply(
     er.replicate[[dv]], 
     function(x) { fitted(x[[1]]) }
@@ -62,8 +62,8 @@ for(dv in erDvs){
       geom_line(size = .3) + 
       guides(fill = 'none') +
       labs(y = count) +
-      scale_fill_manual(values = c('white', '#727272')) +
-      scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, .5)) +
+      scale_fill_manual(values = c('#f0f0f0', '#9E3173')) +
+      scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, .5), expand = c(.125, 0)) +
       theme_minimal() +
       if(dv == 'lead_fh1'){
         theme(
@@ -97,14 +97,14 @@ for(dv in erDvs){
 ggsave( ## clumsily wraps all plots in list to single page
   file = file.path(pathOut, paste0('superSeperationER.pdf')),
   arrangeGrob(
-    do.call(arrangeGrob, c(plotlist[['lead_fh1']], list(ncol = 1, main = textGrob('ER at t+1', vjust = .7)))),
-    do.call(arrangeGrob, c(plotlist[['lead_fh2']], list(ncol = 1, main = textGrob('ER at t+2', vjust = .7)))),
-    do.call(arrangeGrob, c(plotlist[['lead_fh3']], list(ncol = 1, main = textGrob('ER at t+3', vjust = .7)))),
-    do.call(arrangeGrob, c(plotlist[['lead_fh4']], list(ncol = 1, main = textGrob('ER at t+4', vjust = .7)))),
-    do.call(arrangeGrob, c(plotlist[['lead_fh5']], list(ncol = 1, main = textGrob('ER at t+5', vjust = .7)))),
+    do.call(arrangeGrob, c(plotlist[['lead_fh1']], list(ncol = 1, main = textGrob('   t+1', vjust = .7)))),
+    do.call(arrangeGrob, c(plotlist[['lead_fh2']], list(ncol = 1, main = textGrob('t+2', vjust = .7)))),
+    do.call(arrangeGrob, c(plotlist[['lead_fh3']], list(ncol = 1, main = textGrob('t+3', vjust = .7)))),
+    do.call(arrangeGrob, c(plotlist[['lead_fh4']], list(ncol = 1, main = textGrob('t+4', vjust = .7)))),
+    do.call(arrangeGrob, c(plotlist[['lead_fh5']], list(ncol = 1, main = textGrob('t+5', vjust = .7)))),
     ncol = 5
   ),
-  width = 7, height = 7/1.618, family = 'serif'
+  width = 3.5, height = 3/2, family = 'sans'
 )
 
 ## --- clean up -------------------------------------------------

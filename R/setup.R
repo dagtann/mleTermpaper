@@ -25,8 +25,10 @@ set.seed(8590)
 # source(file.path(pathCode, 'original', 'outputRegressionTablesPiRepression.R'))
 # source(file.path(pathCode, 'original', 'differencesSePi.R'))
 # source(file.path(pathCode, 'original', 'differencesSeEr.R'))
-# source(file.path(pathCode, 'original', 'parallelRegressionsPi.R'))
-# source(file.path(pathCode, 'original', 'parallelRegressionsEr.R'))
+# source(file.path(pathCode, 'original', 'parallelRegressionsPi_modified.R'))
+# source(file.path(pathCode, 'original', 'parallelRegressionsEr_modified.R'))
+# source(file.path(pathCode, 'original', 'separationPlotsER.R'))
+# source(file.path(pathCode, 'original', 'separationPlotsPI.R'))
 
 ## --- Replication steps ----------------------------------------
 # source(file.path(pathCode, 'executeCrossValidation.R'))

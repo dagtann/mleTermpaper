@@ -57,11 +57,11 @@ coef.dta <- aggregate(
 )
 coef.dta <- within(coef.dta, {
   erDvs <- as.character(erDvs)
-  erDvs <- ifelse(erDvs == 'lead_fh1', 'ER at t+1', erDvs)
-  erDvs <- ifelse(erDvs == 'lead_fh2', 'ER at t+2', erDvs)
-  erDvs <- ifelse(erDvs == 'lead_fh3', 'ER at t+3', erDvs)
-  erDvs <- ifelse(erDvs == 'lead_fh4', 'ER at t+4', erDvs)
-  erDvs <- ifelse(erDvs == 'lead_fh5', 'ER at t+5', erDvs)
+  erDvs <- ifelse(erDvs == 'lead_fh1', 't+1', erDvs)
+  erDvs <- ifelse(erDvs == 'lead_fh2', 't+2', erDvs)
+  erDvs <- ifelse(erDvs == 'lead_fh3', 't+3', erDvs)
+  erDvs <- ifelse(erDvs == 'lead_fh4', 't+4', erDvs)
+  erDvs <- ifelse(erDvs == 'lead_fh5', 't+5', erDvs)
   }
 )
 ## --- proceed to plotting --------------------------------------

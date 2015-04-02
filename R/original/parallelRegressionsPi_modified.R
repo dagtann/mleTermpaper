@@ -68,11 +68,11 @@ coef.dta <- aggregate(
 )
 coef.dta <- within(coef.dta, {
   piDvs <- as.character(piDvs)
-  piDvs <- ifelse(piDvs == 'lead_flip1', 'PI at t+1', piDvs)
-  piDvs <- ifelse(piDvs == 'lead_flip2', 'PI at t+2', piDvs)
-  piDvs <- ifelse(piDvs == 'lead_flip3', 'PI at t+3', piDvs)
-  piDvs <- ifelse(piDvs == 'lead_flip4', 'PI at t+4', piDvs)
-  piDvs <- ifelse(piDvs == 'lead_flip5', 'PI at t+5', piDvs)
+  piDvs <- ifelse(piDvs == 'lead_flip1', 't+1', piDvs)
+  piDvs <- ifelse(piDvs == 'lead_flip2', 't+2', piDvs)
+  piDvs <- ifelse(piDvs == 'lead_flip3', 't+3', piDvs)
+  piDvs <- ifelse(piDvs == 'lead_flip4', 't+4', piDvs)
+  piDvs <- ifelse(piDvs == 'lead_flip5', 't+5', piDvs)
   }
 )
 
@@ -92,10 +92,14 @@ geom_hline(
 ) +
 scale_x_discrete(limits = as.character(1:8),
   labels = c(
-    '1' = expression(NULL>=1), '2' = expression(NULL>=2),
-    '3' = expression(NULL>=3), '4' = expression(NULL>=4), 
-    '5' = expression(NULL>=5), '6' = expression(NULL>=6), 
-    '7' = expression(NULL>=7), '8' = expression(NULL>=8)
+    # '1' = expression(NULL>=1), '2' = expression(NULL>=2),
+    # '3' = expression(NULL>=3), '4' = expression(NULL>=4), 
+    # '5' = expression(NULL>=5), '6' = expression(NULL>=6), 
+    # '7' = expression(NULL>=7), '8' = expression(NULL>=8)
+    '1' = expression(NULL>=1), '2' = "",
+    '3' = expression(NULL>=3), '4' = "", 
+    '5' = expression(NULL>=5), '6' = "", 
+    '7' = expression(NULL>=7), '8' = ""
   )
 ) +
 scale_y_continuous(breaks = seq(-.5, .75, .25)) +
@@ -104,10 +108,7 @@ labs(
   y = 'Estimated coefficient on co-optation',
   x = 'Discrete levels of physical integrity violations'
 ) + 
-theme_minimal() +
-theme(
-  axis.text.x = element_text(hjust = 1, vjust = 1, angle = 45)
-)
+theme_minimal()
 
 library('gridExtra')               ## Add labeling note at bottom
 sub.label <- textGrob(                 
