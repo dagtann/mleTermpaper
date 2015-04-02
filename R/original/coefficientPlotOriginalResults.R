@@ -1,0 +1,166 @@
+load(file.path(pathOut, 'omodels.RData'))
+## -- empowerment rights ----------------------------------------
+er.coef <- lapply(er.replicate, function(dv){           ## extract coefficients
+  sapply(dv, function(imp) { c(coef(imp[[1]]), imp[[1]][['zeta']]) } )
+  }
+)
+er.coef <- sapply(er.coef, rowMeans)
+er.se <- lapply(er.replicate, function(dv){           ## extract coefficients
+  sapply(dv, function(imp) { sqrt(diag(imp[[2]])) } )
+  }
+)
+er.se <- sapply(er.se, rowMeans)
+er.list <- list(coef = er.coef, se = er.se)
+for(i in names(er.list) ){
+  er.list[[i]] <- as.data.frame(er.list[[i]])
+  er.list[[i]][, 'var'] <- row.names(er.list[[i]])
+  er.list[[i]] <- reshape2::melt(
+    er.list[[i]], 
+    id.vars = 'var', measure.vars = 1:(ncol(er.list[[i]])-1), value.name = i
+  )
+  names(er.list[[i]]) <- c('variable', 'dv', i)
+}
+er.dta <- merge(er.list[[1]], er.list[[2]])
+er.dta <- er.dta[with(er.dta, order(dv, variable)), ]
+
+## --- physical integrity rights --------------------------------
+pi.coef <- lapply(pi.replicate, function(dv){           ## extract coefficients
+  sapply(dv, function(imp) { c(coef(imp[[1]]), imp[[1]][['zeta']]) } )
+  }
+)
+pi.coef <- sapply(pi.coef, rowMeans)
+pi.se <- lapply(pi.replicate, function(dv){           ## extract coefficients
+  sapply(dv, function(imp) { sqrt(diag(imp[[2]])) } )
+  }
+)
+pi.se <- sapply(pi.se, rowMeans)
+pi.list <- list(coef = pi.coef, se = pi.se)
+for(i in names(pi.list) ){
+  pi.list[[i]] <- as.data.frame(pi.list[[i]])
+  pi.list[[i]][, 'var'] <- row.names(pi.list[[i]])
+  pi.list[[i]] <- reshape2::melt(
+    pi.list[[i]], 
+    id.vars = 'var', measure.vars = 1:(ncol(pi.list[[i]])-1), value.name = i
+  )
+  names(pi.list[[i]]) <- c('variable', 'dv', i)
+}
+pi.dta <- merge(pi.list[[1]], pi.list[[2]])
+pi.dta <- pi.dta[with(pi.dta, order(dv, variable)), ]
+
+pdta <- rbind(pi.dta, er.dta)
+drop <- grep(x = pdta[, 'variable'], pattern = "|", fixed = TRUE)
+pdta <- pdta[-drop, ]
+drop <- grep(x = pdta[, 'variable'], pattern = "duration", fixed = TRUE)
+pdta <- pdta[-drop, ]
+rm(
+  drop, er.dta, pi.dta, er.coef, er.list, er.se, i, pi.coef, 
+  pi.list, pi.se
+)
+## --- prepare plotting data ------------------------------------
+pdta <- within(pdta, {
+  lead <- as.character(dv)
+  lead <- substr(lead, nchar(lead), nchar(lead))
+  lead <- as.numeric(lead)
+  lead <- factor(lead, levels = 1:5, labels = paste0('t+', 1:5))
+  type <- ifelse(dv %in% erDvs, 'er', 'pi')
+  type <- factor(
+    type, levels = c('er', 'pi'),
+    labels = c('Empowerment rights', 'Physical integrity rights')
+  )
+  lo95 <- coef-qnorm(.975)*se
+  up95 <- coef+qnorm(.975)*se
+  flag <- ifelse(lo95 < 0 & 0 < up95, 0, 1) ## significant flag  
+  flag <- ifelse(flag == 1 & coef > 0, 2, flag)
+  flag <- ifelse(flag == 1 & coef < 0, 1, flag)
+  xlabs <- variable
+  xlabs <- factor(xlabs, 
+    levels = c(
+      "cooptation", "fh_ordinal", "flip_ciri_phys", 
+      "prio_conflict_intra", "prio_conflict_inter", "gled_lpop", 
+      "gled_lgdppc", "geddes_personalYes", "geddes_monarchYes", 
+      "geddes_partyYes", "wdi_tradegdp", "coldwarYes", 
+      "wdi_gdppcgrowth", 
+      #"archigos_durationLin", "archigos_durationSqu", "archigos_durationCub", 
+      "archigos_pastleaderfail", "powthy_pastattempts", 
+      "pseudologross", "electionYes", "banks_genstrike", "banks_riot",
+      "banks_antigovdem"
+    ),
+    labels = c(
+      'Co-optation', 'Current ER Repression', 'Current PIR repression', 
+      'Civil war', 'Interstate war', 'log(Population)', 
+      'log(GDP/capita)', 'Personalist Regime', 'Monarchy', 
+      'Dominant party', 'Trade in Percent of GDP', 'Cold War',
+      'Growth in GDP/capita', 
+      # 'Leader Duration', expression(plain(Leader~Duration)^2), expression(plain(Leader~Duration)^3),
+      'Past leader failures', 'Past coups', 'log(Oil rents)', 
+      'Election year', 'General strikes', 'Riots', 
+      'Antigov. protests'
+    )
+  )
+  }
+)
+## --- generate plot --------------------------------------------
+library('grid')
+order.labs <- levels(pdta[, 'xlabs'])
+order.labs <- rev(order.labs)
+
+p <- ggplot(
+  data = pdta, 
+  aes(
+    x = xlabs, y = coef, ymin = lo95, ymax = up95, 
+    shape = factor(type), colour = factor(flag)
+  )
+) + 
+geom_hline(yintercept = 0, linetype = 'dotted', alpha = .5) +
+geom_errorbar(
+  stat = 'identity', position = position_dodge(.6), width = 0
+) +
+geom_point(
+  size = 3, stat = 'identity', position = position_dodge(.6)
+) +
+scale_shape_discrete(solid = FALSE) +
+scale_color_manual(
+  values = c('#cccccc', '#0380B5', '#9E3173')
+) +
+scale_x_discrete(
+  limits = order.labs, 
+  labels = c(
+    "Antigov. prot.", "Riots", "Strikes", "Election", 
+    "log(Oil rents)", "Past coups", "Past leader fail.", 
+    # expression(plain(Leader~duration)^3), expression(plain(Leader~duration)^2), "Leader duration", 
+    "Growth (%GDP)", "Cold War", "Trade (%GDP)", 
+    "Dom. party", "Monarchy", "Personal", 
+    "log(GDP/capita)", "log(Popul)", "Inter. war", 
+    "Civil war", 
+    expression(plain(PIR)[t[0]]), 
+    expression(plain(ER)[t[0]]), 
+    "Co-opt."
+  )
+) +
+labs(
+  colour = expression(plain(Stat.~significance~at)~alpha==.05),
+  shape = 'Repression of'
+) +
+guides(colour = 'none', size = 'none') +
+theme_bw() +
+coord_flip() +
+theme(
+  legend.title = element_blank(),
+  legend.position = c(.3, 1.06), legend.direction = 'horizontal',
+  legend.background = element_rect(fill = 'transparent'),
+  legend.key = element_blank(),
+  axis.text.y = element_text(angle = 315, vjust = 1, hjust = 1),
+  axis.title = element_blank(),
+  plot.margin = unit(c(1, 0, 0, -.8)+.1, units = 'lines')
+) +
+facet_wrap(~lead, ncol = 5)
+ggsave(
+  plot = p, 
+  file = file.path(pathOut, 'coefPlotOriginal.pdf'),
+  width = 6, height = 6, family = 'sans'
+)
+detach(package:grid)
+
+## --- Finishing ------------------------------------------------
+rm(pdta, p)
+## END
