@@ -1,4 +1,4 @@
-\documentclass[landscape, a0paper]{baposter}
+\documentclass[landscape, a0paper, final]{baposter}
 
 \usepackage{blindtext}
 
@@ -8,7 +8,7 @@
 
 \usepackage{graphicx}
 \usepackage{caption}
-
+\usepackage{transparent}
 
 
 \begin{document}
@@ -78,37 +78,38 @@
   restrictions on empowerment rights. Simultaneously, it seems to 
   {\color{wzbMagenta} encourage} physical integrity violations.
 }
-\headerbox{\sf \color{white} Results}{name=results,column=1,span=2,row=0,textborder=rounded}{
+\headerbox{\sf \color{white} Replication results}{name=results,column=1,span=2,row=0,textborder=rounded,bottomaligned=first}{
 \begin{minipage}{.49\linewidth}
   \centering
-  \captionof{figure}{Parallel regressions assumptions}
-  \includegraphics[width=3in]{/home/dag/Dropbox/Buero/Dissertation/2015/duke/classes/mle/termPaper/out/parallelRegressionsEr_modified.pdf}
-\end{minipage}
-\vfill
-\begin{minipage}{.49\linewidth}
-  \centering
-  \includegraphics[width=3in]{/home/dag/Dropbox/Buero/Dissertation/2015/duke/classes/mle/termPaper/out/parallelRegressionsPi_modified.pdf}
-\end{minipage}
-\vfill
-\begin{minipage}{.49\linewidth}
-  \centering
-  \captionof{figure}{Separation plots}
-  \includegraphics[width=3in]{/home/dag/Dropbox/Buero/Dissertation/2015/duke/classes/mle/termPaper/out/superSeperationER.pdf}
-  \captionof*{figure}{(a) Empowerment rights restrictions}
-\end{minipage}
-\vfill
-\begin{minipage}{.49\linewidth}
-  \centering
-  \includegraphics[width=3in]{/home/dag/Dropbox/Buero/Dissertation/2015/duke/classes/mle/termPaper/out/superSeparationPI.pdf}
-  \captionof*{figure}{(b) Physical integrity violations}
-\end{minipage}
-\hfill
-\begin{minipage}{.49\linewidth}
-  \centering
-  \captionof{figure}{Relative model fit}
-  \includegraphics[width=3in]{/home/dag/Dropbox/Buero/Dissertation/2015/duke/classes/mle/termPaper/out/aicDifferences.pdf}
+  \includegraphics[width=3in]{/home/dag/Dropbox/Buero/Dissertation/2015/duke/classes/mle/termPaper/out/parallelRegrDevianceBonfP.pdf}
 \end{minipage}
 }
+
+% \vfill
+% \begin{minipage}{.49\linewidth}
+%   \centering
+%   \includegraphics[width=3in]{/home/dag/Dropbox/Buero/Dissertation/2015/duke/classes/mle/termPaper/out/parallelRegressionsPi_modified.pdf}
+% \end{minipage}
+% \vfill
+% \begin{minipage}{.49\linewidth}
+%   \centering
+%   \captionof{figure}{Separation plots}
+%   \includegraphics[width=3in]{/home/dag/Dropbox/Buero/Dissertation/2015/duke/classes/mle/termPaper/out/superSeperationER.pdf}
+%   \captionof*{figure}{(a) Empowerment rights restrictions}
+% \end{minipage}
+% \vfill
+% \begin{minipage}{.49\linewidth}
+%   \centering
+%   \includegraphics[width=3in]{/home/dag/Dropbox/Buero/Dissertation/2015/duke/classes/mle/termPaper/out/superSeparationPI.pdf}
+%   \captionof*{figure}{(b) Physical integrity violations}
+% \end{minipage}
+% \hfill
+% \begin{minipage}{.49\linewidth}
+%   \centering
+%   \captionof{figure}{Relative model fit}
+%   \includegraphics[width=3in]{/home/dag/Dropbox/Buero/Dissertation/2015/duke/classes/mle/termPaper/out/aicDifferences.pdf}
+% \end{minipage}
+% }
 
 \headerbox{\sf \color{white} Conclusions}{name=conclusions,column=3,row=0,textborder=roundedleft}{
   \blindtext

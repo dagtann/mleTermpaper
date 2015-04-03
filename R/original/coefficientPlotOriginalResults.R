@@ -116,7 +116,7 @@ geom_errorbar(
   stat = 'identity', position = position_dodge(.6), width = 0
 ) +
 geom_point(
-  size = 3, stat = 'identity', position = position_dodge(.6)
+  stat = 'identity', position = position_dodge(.6)
 ) +
 scale_shape_discrete(solid = FALSE) +
 scale_color_manual(
@@ -132,8 +132,7 @@ scale_x_discrete(
     "Dom. party", "Monarchy", "Personal", 
     "log(GDP/capita)", "log(Popul)", "Inter. war", 
     "Civil war", 
-    expression(plain(PIR)[t[0]]), 
-    expression(plain(ER)[t[0]]), 
+    expression(plain(PIR)[t[0]]), expression(plain(ER)[t[0]]), 
     "Co-opt."
   )
 ) +
@@ -146,18 +145,18 @@ theme_bw() +
 coord_flip() +
 theme(
   legend.title = element_blank(),
-  legend.position = c(.3, 1.06), legend.direction = 'horizontal',
+  legend.position = c(.34, 1.07), legend.direction = 'horizontal',
   legend.background = element_rect(fill = 'transparent'),
   legend.key = element_blank(),
   axis.text.y = element_text(angle = 315, vjust = 1, hjust = 1),
   axis.title = element_blank(),
-  plot.margin = unit(c(1, 0, 0, -.8)+.1, units = 'lines')
+  plot.margin = unit(c(1, 0, 0, -.8)+.2, units = 'lines')
 ) +
 facet_wrap(~lead, ncol = 5)
 ggsave(
   plot = p, 
   file = file.path(pathOut, 'coefPlotOriginal.pdf'),
-  width = 6, height = 6, family = 'sans'
+  width = 5, height = 5, family = 'serif'
 )
 detach(package:grid)
 

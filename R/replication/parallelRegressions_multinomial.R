@@ -11,6 +11,7 @@ mnomFit <- function(dv, ivs, dta){    ## multinomial fit function
 }
 
 ## --- run multinomial alternative models -----------------------
+## Attention: You are about to run bottleneck procedures.
 mnom.er <- vector('list', length = length(erDvs))
 names(mnom.er) <- erDvs
 for(dv in erDvs) {
@@ -85,19 +86,79 @@ assum.dta[, 'edf.mnom'] <- pull(
 assum.dta[, 'deviance.mnom'] <- pull(
   from = c(mnom.er, mnom.pi), what = 'deviance'
 )
-rm(pull)
+rm(pull)                                       ## pull not needed
 
-assum.dta[, 'pval'] <- with(assum.dta, ## generate comparions dta
-  pchisq( 
+assum.dta <- within(assum.dta, {## generate comparions dta
+  pval <- pchisq( # bonferroni adjustment for multiple testing
     deviance.polr-deviance.mnom, 
     edf.mnom-edf.polr, 
     lower.tail = FALSE
   )
+  type <- factor(ifelse(dv %in% erDvs, 'er', 'pi'))
+  }
 )
-plot(x = 1:nrow(assum.dta), y = assum.dta[, 'pval'])
-abline(h = .05)
-## Probably everything following the first model violates parallel
-## regressions
+assum.dta[, 'pcorr'] <- ave(
+  assum.dta[, 'pval'], assum.dta[, 'type'], 
+  FUN = function(x) { p.adjust(x, method = 'bonferroni') }
+)
+head(assum.dta)
+with(assum.dta, plot(density(pcorr-pval)))
 
+correction <- function(pval){
+  p.adjust(pval, method = p.adjust.methods, n = length(p))
+}
+
+
+pdta <- aggregate(
+  assum.dta[, c('pval', 'pcorr')], 
+  by = list(dv = assum.dta[, 'dv']), 
+  FUN = mean
+)
+pdta <- within(pdta, {
+  type <- ifelse(dv %in% erDvs, 'er', 'pi')
+  type <- factor(type, 
+    levels = c('er', 'pi'), 
+    labels = c('Empowerment rights', 'Physical integrity rights')
+  )
+  lead <- as.character(dv)
+  lead <- substr(lead, nchar(lead), nchar(lead))
+  lead <- factor(
+    lead, levels = 1:5, labels = paste0('t+', 1:5)
+  )
+  }
+)
+
+library('grid')
+p <- ggplot(
+  data = pdta, 
+  aes(x = lead, y = pcorr, shape = type)
+) + 
+geom_hline(yintercept = .05, linetype = 'longdash') +
+geom_point(position = position_dodge(.3)) + 
+annotate(
+  label = paste(expression(alpha==0.05)), x = 5, y = .05,
+  vjust = -.2, hjust = 0.2, geom = 'text', parse = TRUE, family = 'serif',
+  size = 3.5
+) +
+scale_y_continuous(breaks = c(0, .25, .5, .75, 1)) +
+labs(
+  y = 'P-Value',
+  #expression(plain(P-Value)[plain(Bonferroni)]), 
+  x = '', shape = ''
+) +
+theme_minimal(base_family = 'serif') +
+theme(
+  legend.position = c(.415, 1.06),
+  legend.direction = 'horizontal',
+  legend.title = element_blank(),
+  axis.title.x = element_blank(),
+  panel.grid.minor.y = element_blank(),
+  plot.margin = unit(c(1, 0, 0, 0)+.1, units = 'lines')
+)
+ggsave(plot = p, 
+  file = file.path(pathOut, 'parallelRegrDevianceBonfP.pdf'),
+  width = 4, height = 4/1.618, dpi = 1200
+)
+detach(package:grid)
 ## --- finishing up ---------------------------------------------
-rm(numWorkers, mnomFit, mnom.er, mnom.pi, assum.dta)
+# rm(numWorkers, mnomFit, mnom.er, mnom.pi, assum.dta)
