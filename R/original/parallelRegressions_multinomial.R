@@ -136,19 +136,18 @@ p <- ggplot(
 geom_hline(yintercept = .05, linetype = 'longdash') +
 geom_point(position = position_dodge(.3)) + 
 annotate(
-  label = paste(expression(alpha==0.05)), x = 5, y = .05,
-  vjust = -.2, hjust = 0.2, geom = 'text', parse = TRUE, family = 'serif',
+  label = paste(expression(p==0.05)), x = 5, y = .05,
+  vjust = -.2, hjust = 0.5, geom = 'text', parse = TRUE, family = 'serif',
   size = 3.5
 ) +
 scale_y_continuous(breaks = c(0, .25, .5, .75, 1)) +
 labs(
-  y = 'P-Value',
-  #expression(plain(P-Value)[plain(Bonferroni)]), 
+  y = expression(bar(p)[Bonf.]),
   x = '', shape = ''
 ) +
-theme_minimal(base_family = 'serif') +
+theme_minimal(base_size = 12*.8, base_family = 'serif') +
 theme(
-  legend.position = c(.415, 1.06),
+  legend.position = c(.47, 1.06),
   legend.direction = 'horizontal',
   legend.title = element_blank(),
   axis.title.x = element_blank(),
@@ -157,7 +156,7 @@ theme(
 )
 ggsave(plot = p, 
   file = file.path(pathOut, 'parallelRegrDevianceBonfP.pdf'),
-  width = 4, height = 4/1.618, dpi = 1200
+  width = 3, height = 3/1.618, dpi = 1200
 )
 detach(package:grid)
 ## --- finishing up ---------------------------------------------

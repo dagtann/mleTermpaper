@@ -102,40 +102,44 @@ bic.pdta <- within( bic.pdta, {
 )
 bic.pdta[, 'delta'] <- with(bic.pdta, bic.bare-bic.full)
 
-library('grid'); library('RColorBrewer')
-colors <- brewer.pal(n = 5, name = 'Dark2')
-
+library('grid')
+colors <- vector(length = 5)
+colors[1] <- '#0380B5' #Bluish
+colors[2] <- '#9E3173'
+colors[3] <- '#619933'
+colors[4] <- '#d95f02'
+colors[5] <- '#7570b3' 
 p <- ggplot(data = bic.pdta, 
-  aes(x = bic.full, y = delta, color = as.factor(lead))
+  aes(x = bic.full, y = delta, colour = as.factor(lead))
 ) +
 geom_hline(yintercept = 0, linetype = 'longdash') +
+geom_linerange(aes(ymin = 0, ymax = delta), show_guide = FALSE, lineend = 'round') +
 geom_point(size = 3) +
-
 scale_y_continuous(limits = c(-125, 125)) +
 labs(
   x = expression(plain(BIC)[Full]), 
   y = expression(
-    plain(BIC)[plain(Lagged~Response)]-plain(BIC)[plain(Full)]
+    plain(BIC)[plain(Lagged~DV)]-plain(BIC)[plain(Full)]
   ),
-  colour = 'Lead', shape = 'Repression of'
+  colour= 't+'
 ) +
 scale_colour_manual(
   values = colors,
-  labels = paste('t', 1:5, sep = '+')
+  labels = paste(1:5)
 ) +
 facet_wrap(~type, scale = 'free_x') +
-theme_minimal() +
+theme_minimal(base_size = .8*12) +
 theme(
-  legend.position = c(.19, 1.09),
+  legend.position = c(.425, 1.25),
   legend.direction = 'horizontal',
   legend.background = element_rect(fill = 'transparent', colour = 'transparent'),
   legend.key = element_blank(),
-  legend.title = element_blank(),
+  #legend.title = element_blank(),
   plot.margin = unit(c(1,.7,0,0)+.1, units = 'lines')
 )
 ggsave(
   plot = p, file = file.path(pathOut, 'aicDifferences.pdf'),
-  width = 7, height = 7/1.618, dpi = 1200, family = 'sans'
+  width = 3, height = 3/1.618, dpi = 1200, family = 'serif'
 )
 
 ## --- Finishing ------------------------------------------------
