@@ -135,6 +135,7 @@ theme(
   legend.background = element_rect(fill = 'transparent', colour = 'transparent'),
   legend.key = element_blank(),
   #legend.title = element_blank(),
+  panel.grid.minor = element_blank(),
   plot.margin = unit(c(1,.7,0,0)+.1, units = 'lines')
 )
 ggsave(
