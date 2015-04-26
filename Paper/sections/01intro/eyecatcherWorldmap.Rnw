@@ -1,0 +1,131 @@
+<<>>=
+load(file.path(pathOut, 'orgData.RData'))
+packsHere <- c('rgdal','ggplot2','grid')
+lapply(packsHere, library, character.only = TRUE)
+pathMap <- c('/home/dag/Dropbox/Buero/Dissertation/2015/duke/classes/mle/termPaper/dta/mapdta')
+
+theme_nothing <- function(base_size = 12, base_family = "serif")
+  {
+  theme_bw(base_size = base_size, base_family = base_family) %+replace%
+    theme(
+      rect             = element_blank(),
+      line             = element_blank(),
+      #text             = element_blank(),
+      axis.ticks.margin = unit(0, "lines")
+    )
+  }
+# check that it is a complete theme
+attr(theme_nothing(), "complete")
+
+map.bbox <- readOGR(
+  dsn = file.path(pathMap, "ne_110m_wgs84_bounding_box.shp"), 
+  layer = "ne_110m_wgs84_bounding_box"
+)
+map.bbox <- spTransform(map.bbox, CRS("+proj=wag4"))
+map.land <- readOGR(
+  dsn = file.path(pathMap, "ne_110m_land.shp"), 
+  layer = "ne_110m_land"
+)
+map.land <- spTransform(map.land, CRS("+proj=wag4"))
+map.ctry <- readOGR(
+  dsn = file.path(pathMap, "ne_110m_admin_0_countries.shp"), 
+  layer = "ne_110m_admin_0_countries"
+)
+map.ctry <- spTransform(map.ctry, CRS("+proj=wag4"))
+map.bbox <- fortify(map.bbox)
+map.land <- fortify(map.land)
+map.ctry <- fortify(map.ctry, region = 'iso_a3')
+
+map.dta <- subset(org.dta, 
+  year == 2007, select = c('cowcode', 'cooptation_discrete', 'geddes_casename')
+)
+library('countrycode')
+map.dta <- within(map.dta, {
+  id <- countrycode(
+    sourcevar = cowcode, origin = 'cown', destination = 'iso3c', 
+    warn = TRUE
+  )
+  id <- ifelse(cowcode == 678, 'YEM', id)
+  cooptation_discrete <- as.character(cooptation_discrete)
+  }
+)
+table(map.dta[, 'id'], map.dta[, 'cooptation_discrete'], exclude = 'NULL')
+detach(package:countrycode)
+library(ETLUtils)
+map.dta <- matchmerge(
+  x = map.ctry, y = map.dta, 
+  by.x = map.ctry[, "id"],
+  by.y = map.dta[, "id"],
+  by.iskey = TRUE,
+  all.x = TRUE,
+  check.duplicates = FALSE,
+  trace = TRUE
+)
+detach(package:ETLUtils)
+detach(package:ff)
+detach(package:bit)
+map.dta <- within(map.dta, {
+  cooptation_discrete <- ifelse(
+    is.na(cooptation_discrete), 'Democracy', cooptation_discrete
+  )
+  cooptation_map <- NA
+  cooptation_map <- ifelse(
+    cooptation_discrete == 'Democracy', 0, cooptation_map
+  )
+  cooptation_map <- ifelse(
+    cooptation_discrete %in% c(
+      'Leg1Par', 'legMore1Par', 'NoLegLeast1Par'
+    ), 1, cooptation_map
+  )
+  cooptation_map <- ifelse(
+    cooptation_discrete == 'NoLegPar', 2, cooptation_map
+  )
+  cooptation_map <- factor(cooptation_map)
+  }
+)
+library('RColorBrewer')
+cols <- brewer.pal(n = 3, name = 'Greys')
+colors <- c('transparent', cols[3], cols[2])
+
+p <- ggplot() +
+geom_polygon(
+  data = map.bbox, aes(x = long, y = lat), 
+  fill = 'transparent', colour = 'black', size = .1, show_guide = FALSE
+) +
+geom_polygon(
+  data = map.dta, 
+  aes(x = long, y = lat, group = group, fill = cooptation_map), 
+  colour = 'transparent', size = .1, show_guide = TRUE
+) +
+geom_polygon(
+  data = map.dta, 
+  aes(x = long, y = lat, group = group), 
+  colour = 'white', fill = 'transparent', size = .1, show_guide = FALSE
+) +
+geom_polygon(
+  data = map.land, aes(x = long, y = lat, group = group),
+  fill = 'transparent', colour = 'black', size = .1, show_guide = FALSE
+) +
+scale_fill_manual(values = colors, 
+  labels = c("", "Party/Legislature", 'Neither')
+) +
+labs(title = 'Autocracies in 2007', fill = '2007', y= '2007') +
+theme_nothing(base_size = 12) +
+theme(
+  legend.position = c(.47, 1.01), legend.direction = 'horizontal',
+  legend.title = element_blank(),
+  legend.key.size = unit(.5, "lines"),
+  legend.background = element_rect(fill = 'white', colour = 'black'),
+  axis.text = element_blank(),
+  axis.title = element_blank(),
+  title = element_blank(),
+  plot.margin = unit(c(0, -.7, -1.2, -1.5), 'lines')
+)
+ggsave(
+  plot = p, 
+  file = file.path(
+    pathPaper, 'sections/01intro/worldmapTermpaperIntro.pdf'
+  ),
+  width = 3, height = 3/1.618, family = 'serif'
+)
+@
