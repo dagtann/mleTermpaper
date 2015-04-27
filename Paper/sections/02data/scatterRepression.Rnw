@@ -1,0 +1,37 @@
+<<>>=
+## This script generates a scatterplot of physical integrity
+## against empowerment rights restrictions for the
+## unimputed data
+## ---------------------------------------------------------
+set.seed(6235)
+basesize = 12
+library('grid')
+
+p <- ggplot(             ## limit to publication information
+  data = subset(org.dta, year >= 1981 & year <= 2004), 
+  aes(x = fh_ordinal, y = flip_ciri_phys)
+)
+p <- p + geom_jitter(                        ## scatter plot
+  position = position_jitter(width = .2/1.618, height = .2),
+  size = 1, alpha = .2
+) +
+geom_smooth(                         ## smoothed correlation
+  method = 'loess', span = .8, colour = 'grey15', 
+  size = .3, linetype = 'solid') +
+geom_rug(                           ## marginal distribution
+  sides = 'tr', alpha = .1, position = 'jitter', size = .3) +
+labs( 
+  x = 'Empowerment rights restrictions', 
+  y = 'Physical integrity violations'
+) +
+theme_minimal(base_size = .6*basesize) +
+theme(plot.margin = unit(rep(0, 4)+.1, units = 'lines'))
+ggsave(
+  plot = p, 
+  file = file.path(pathPaper, 'sections', '02data', 'scatterRepression.pdf'),
+  width = 3, height = 3/1.618, family = 'serif'
+)
+## --- Finishing -------------------------------------------
+rm(p)
+detach(package:grid)
+@

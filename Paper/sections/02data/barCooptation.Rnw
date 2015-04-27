@@ -1,0 +1,46 @@
+<<>>=
+## This script generates a bar chart for cooptation.
+## ---------------------------------------------------------
+library('grid')
+basesize = 12
+p <-  ggplot(             ## subset data to avoid NA entries
+  data = subset(org.dta, 
+    (year >= 1981 & year <= 2004) &
+    !is.na(cooptation_discrete)
+  )
+)
+p <- p + geom_bar(aes(x = cooptation_discrete)) +
+labs(x = '', y = '') +
+scale_x_discrete(                  
+  limits = rev(                    ## reverse order for plot
+    c("NoLegPar", "NoLegLeast1Par", "Leg1Par", "legMore1Par")
+  ),
+  labels = rev(                    ## assign speaking labels
+    c(
+      '0: Neither', 
+      '1: Either-or',
+      '2: Legislature,\n1 party', '3: Legislature,\nmult. parties'
+    )
+  ),
+  expand = c(0, 0)
+) +
+scale_y_continuous(expand = c(0,0)) +  ## reduce white space
+theme_minimal(base_size = .6*basesize) +
+theme(                         ## finishing touches to theme
+  panel.grid.major.x = element_blank(),
+  axis.ticks.x = element_blank(),
+  axis.title.x = element_blank(),
+  axis.ticks.y = element_blank(),
+  axis.title.y = element_blank(),
+  plot.margin = unit(rep(0, 4)+.1, units = 'lines')
+)
+ggsave(
+  plot = p,
+  file = file.path(pathPaper, 'sections', '02data', 'barCooptation.pdf'),
+  width = 3, height = 3/1.618, family = 'serif'
+)
+## --- Finishing -------------------------------------------
+rm(p, basesize)
+detach(package:grid)
+## END
+@

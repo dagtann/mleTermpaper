@@ -1,0 +1,33 @@
+<<>>=
+library('stargazer')
+tmp <- subset(org.dta, year >= 1981 & year <= 2004)
+for(i in c("geddes_personal", "geddes_monarch", "geddes_party"))
+tmp[, i] <- as.numeric(tmp[, i])-1
+stargazer(
+  title = 'Summary statistics of control variables',
+  style = 'apsr',
+  tmp[, c(
+    "prio_conflict_intra", "prio_conflict_inter",
+    "gled_lpop", "gled_lgdppc", "geddes_personal",
+    "geddes_monarch", "geddes_party", "wdi_tradegdp",
+    "coldwar", "wdi_gdppcgrowth", "archigos_duration",
+    "archigos_pastleaderfail",
+    "powthy_pastattempts", "pseudologross",
+    "election", "banks_genstrike", "banks_riot", 
+    "banks_antigovdem"
+  )],
+  summary=TRUE,
+  covariate.labels = c('Civil war', 'Interstate war', 
+    'log(population)', 'log(GDP per capita)', 
+    'Personal regime', 'Monarchy', 'Dominant party regime',
+    'Trade (% of GDPpc)', 'Cold War', 'Growth (% of GDPpc)',
+    'Leadership duration', 'Past leadership fails', 
+    'Past coups', 'Oil rents', 'Election year', 'Strikes', 
+    'Riots', 'Anti-gov. demonstr.'
+  ),
+  summary.stat = c('min', 'mean', 'max', 'sd', 'n'),
+  out = file.path(pathPaper, 'sections', 'appendix', 'sampleSummaryControls.tex')
+)
+## --- Finishing -------------------------------------------
+rm(tmp)
+@
