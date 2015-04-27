@@ -2,7 +2,8 @@ rm(list = ls())                                    ## start clean
 if(Sys.info()['user']=='dag'){
   pathCode = '/home/dag/gitreps/mleTermpaper/R' ;
   pathData = '/home/dag/Dropbox/Buero/Dissertation/2015/duke/classes/mle/termPaper/dta' ;
-  pathOut = '/home/dag/Dropbox/Buero/Dissertation/2015/duke/classes/mle/termPaper/out'
+  pathOut = '/home/dag/Dropbox/Buero/Dissertation/2015/duke/classes/mle/termPaper/out' ;
+  pathPaper = '/home/dag/gitreps/mleTermpaper/Paper'
 }
 
 ## --- Call standard libraries ----------------------------------
@@ -17,7 +18,8 @@ options(help_type = 'html')
 set.seed(8590)
 
 ## --- source builds --------------------------------------------
-# source(file.path(pathCode, 'dataBuild.R'))
+source(file.path(pathCode, 'dataBuild.R'))
+source(file.path(pathCode, 'myAnalysis', 'setupOriginalData.R'))
 
 ## --- Published Results ----------------------------------------
 # source(file.path(pathCode, 'original', 'publishedAnalysis.R'))

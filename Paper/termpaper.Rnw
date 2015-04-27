@@ -102,8 +102,19 @@ load(file.path(pathOut, 'orgData.RData'))             ## load raw data
 @
 \input{./sections/01intro/text}
 
-\section{Data \& design}
+\section{Design \& data}
+<<scatterRepression, child = './sections/02data/scatterRepression.Rnw'>>=
+@
+<<barCooptation, child = './sections/02data/barCooptation.Rnw'>>=
+@
 \input{./sections/02data/text}
+
+\newpage
+\appendix
+\section{Summary statistics}
+<<sampleSummary, child = './sections/appendix/summaryStatisticsControls.Rnw'>>=
+@
+\input{./sections/appendix/sampleSummaryControls.tex}
 
 \newpage
 \addcontentsline{toc}{section}{References}

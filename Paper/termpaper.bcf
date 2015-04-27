@@ -1975,9 +1975,21 @@
     <bcf:citekey order="5">Frantz.2014</bcf:citekey>
     <bcf:citekey order="6">Frantz.2014</bcf:citekey>
     <bcf:citekey order="7">Vreeland.2008</bcf:citekey>
+    <bcf:citekey order="8">Vreeland.2008</bcf:citekey>
     <bcf:citekey order="9">Fox.2008</bcf:citekey>
     <bcf:citekey order="9">Fox.2011</bcf:citekey>
     <bcf:citekey order="10">Beck.1995</bcf:citekey>
+    <bcf:citekey order="11">King.2001b</bcf:citekey>
+    <bcf:citekey order="11">Honaker.2010</bcf:citekey>
+    <bcf:citekey order="11">Honaker.2011</bcf:citekey>
+    <bcf:citekey order="12">FreedomHouse.2010</bcf:citekey>
+    <bcf:citekey order="13">Cingranelli.2010b</bcf:citekey>
+    <bcf:citekey order="14">Frantz.2014</bcf:citekey>
+    <bcf:citekey order="15">Cheibub.2010</bcf:citekey>
+    <bcf:citekey order="16">Frantz.2014</bcf:citekey>
+    <bcf:citekey order="17">Carter.2010</bcf:citekey>
+    <bcf:citekey order="18">Carter.2010</bcf:citekey>
+    <bcf:citekey order="19">Frantz.2014</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" type="entry" label="nyt">
   <bcf:sorting>
