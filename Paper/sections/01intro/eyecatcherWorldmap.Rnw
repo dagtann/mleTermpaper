@@ -89,7 +89,7 @@ map.dta <- within(map.dta, {
 
 library('RColorBrewer')
 cols <- brewer.pal(n = 3, name = 'Greys')
-colors <- c('transparent', cols[3], cols[2])
+colors <- c('transparent', 'black', cols[2])
 detach(package:RColorBrewer)
 
 p <- ggplot() +

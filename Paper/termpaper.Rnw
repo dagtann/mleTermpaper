@@ -113,6 +113,9 @@ load(file.path(pathOut, 'orgData.RData'))             ## load raw data
 \input{./sections/02data/text}
 
 \section{Replication results}
+% Uncomment to reproduce coefficient plot
+% NOTE: Labels in left-hand panel are not correct and must
+% be changed externally. Lowest ER response level is >=4!
 % <<coefMultinom, child = './sections/03replication/coefficientMultinomial.Rnw'>>=
 % @
 \input{./sections/03replication/text}

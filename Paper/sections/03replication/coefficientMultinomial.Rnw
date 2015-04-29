@@ -2,13 +2,14 @@
 ## --- Preliminaries --------------------------------------------
 load(file.path(pathOut, 'omodels.RData'))
 glm.refit <- function(data){
+  ## define function for logistic regression
   ## Compute model
   mod <- glm(as.formula(paste0(paste0('ybin', i), '~', ivTerms)),
     data = data,
     family = 'binomial',
     control = list(maxit = 500)        ## increase max iterations
   )
-  ## Compute cluster robus standard errors
+  ## Compute cluster robus standard errors:
   ## mod[['model']][, 'cowcode'] 
   cluster.code <- data[-mod[['na.action']], 'cowcode']
   varCluster <- clusterRobustSe(
@@ -18,20 +19,24 @@ glm.refit <- function(data){
 }
 
 ## --- Define reference/storage for loop ------------------------
-ylevels <- sapply(
+ylevels <- sapply(                   ## dv levels existing in dta
   dta.list[[1]][, c(erDvs, piDvs)], 
   function(x) { 
     na.omit(sort(unique(as.numeric(as.character(x))))) 
   }
 )
-coef.dta <- expand.grid(
+coef.dta <- expand.grid( ## empty df to take regression results
   dv = c(erDvs, piDvs),  imp = paste0('imp', 1:5), ylevel = 0:8, 
   coef = NA, se = NA, perfect = NA
 )
-drop <- with(coef.dta, which(dv %in% erDvs & (ylevel <= 1 | ylevel > 7)))
+drop <- with(coef.dta,                  ## drop redundant entries
+  which(dv %in% erDvs & (ylevel <= 1 | ylevel > 7))
+)
 coef.dta <- coef.dta[-drop, ]
+## sort for looping
 coef.dta <- coef.dta[with(coef.dta, order(dv, imp, ylevel)), ]
 row.names(coef.dta) <- NULL
+# head(coef.dta) ## debug: show structure
 
 ## --- run parallel regression ----------------------------------
 ## You are about to run a bottleneck procedure with 225 regressions
@@ -54,7 +59,7 @@ for(dv in c(erDvs, piDvs)){                       ## for every DV
       # print(table(dta[, dv], dta[, paste0('ybin', i)]))
       dta[na.count, paste0('ybin', i)] <- NA     ## restore missing
       ## Debug print
-      print(count); print(dv); print(paste0('dta', j)); print(paste0('ybin', i))
+      ## print(count); print(dv); print(paste0('dta', j)); print(paste0('ybin', i))
       fit <- glm.refit(dta)
       slot <- which(
         coef.dta[, 'dv'] == dv & 
@@ -64,6 +69,7 @@ for(dv in c(erDvs, piDvs)){                       ## for every DV
       coef.dta[slot, 'coef'] <- coef(fit[['model']])['cooptation']  ## coef
       coef.dta[slot, 'se'] <- sqrt(diag(fit[['varCluster']]))[['cooptation']] ## se
       coef.dta[slot, 'perfect'] <- ifelse(
+        ## tag ylevels where perfect separation occurred
         0.00000000000001 > min(fitted(fit[['model']])) |
         0.99999999999999 < max(fitted(fit[['model']])),
         1, 0
@@ -74,27 +80,54 @@ for(dv in c(erDvs, piDvs)){                       ## for every DV
 rm(fit, count, ylevels)
 summary(coef.dta)
 with(coef.dta, table(ylevel, perfect))
+## erDvs: perfect separation at >=3
+## piDvs: perfect separation at >=1
+## drop from plot
+
+## --- compute imputation standard errors -----------------------
+m <- length(unique(coef.dta[, 'imp']))
+coef.dta <- within(coef.dta, {
+  ## King/Honaker 2001: 53, S^2_q -- between imputation variance
+  se.bar <- ave(se, dv, ylevel, FUN = mean) 
+  se.between <- (se-se.bar)^2
+  se.between <- ave(se.between, dv, ylevel, FUN = sum)
+  se.between <- se.between*(m-1)
+  ## debug:
+  ## summary(se.between)      ## should always be positive, 50 NA
+  se.within <- se^2                      ## within imputation var
+  se.imp <- se.within+se.between*(1+1/m)
+  se.imp <- ave(se.imp, dv, ylevel, 
+    FUN = function(x) { sum(x, na.rm = FALSE) }
+  )
+  se.imp <- sqrt(1/m*se.imp)
+  }
+)
+summary(coef.dta) 
+## Debug summary call: all se's must be pos and should not be 
+## much larger than original se's
+rm(m)
 
 ## --- prepare plotting -----------------------------------------
-coef.dta <- within(coef.dta, {
-  lo95 <- coef - qnorm(.975)*se
-  up95 <- coef + qnorm(.975)*se
+coef.dta <- within(coef.dta, {            ## confidence intervals
+  lo95 <- coef - qnorm(.975)*se.imp
+  up95 <- coef + qnorm(.975)*se.imp
   }
 )
 tmp <- subset(coef.dta, !is.na(coef))
 tmp <- tmp[with(tmp, order(dv, ylevel, imp)), ]
-drop <- with(tmp, 
+drop <- with(tmp, ## if there is any instance of perfect separation,
+  ## drop it. No time to profile likelihood, results dramatic enough
   which(ave(perfect, dv, ylevel, FUN = function(x){ any(x==1) }) == 1)
 )
 tmp <- tmp[-drop, ]
 tmp <- with(tmp,
-  aggregate(
+  aggregate(                             ## aggregate imputations
     tmp[, c('coef', 'se', 'up95', 'lo95')],
     by = list(dv = dv, ylevel = ylevel),
     FUN = mean
   )
 )
-tmp <- within(tmp, {
+tmp <- within(tmp, {                             ## define labels
   lead <- as.character(dv)
   lead <- substr(lead, nchar(lead), nchar(lead))
   type <- ifelse(as.character(dv) %in% erDvs, 'er', 'pi')
@@ -107,11 +140,17 @@ tmp <- within(tmp, {
 drop <- with(tmp, which(dv == 'lead_fh2' & ylevel == 3))
 tmp <- tmp[-drop, ]
 
-dodge <- .65
-lab <- c('NULL>=2', 'NULL>=3', 'NULL>=4', 'NULL>=5', 'NULL>=6', 
+## graph preliminaries
+dodge <- .65                      ## distance between data series
+lab <- c(                                          ## axis labels
+  'NULL>=2', 'NULL>=3', 'NULL>=4', 'NULL>=5', 'NULL>=6', 
   'NULL>=7', 'NULL>=8'
 ) 
+library('RColorBrewer')                          ## marker colors
+colors <- c('black', brewer.pal(n = 3, name = 'Greys')[2])
+detach(package:RColorBrewer)
 
+## --- proceed to plotting --------------------------------------
 library('grid')
 p <- ggplot(
   data = subset(tmp, dv %in% c(erDvs[1:2], piDvs[1:2])),
@@ -126,9 +165,9 @@ geom_errorbar(
 ) + 
 scale_x_discrete(labels = parse(text = lab)) +
 scale_y_continuous(limits = c(-1, 1)) +
-scale_colour_manual(values = c('#0380B5', '#9E3173')) +
+scale_colour_manual(values = colors) +
 labs(
-  x = 'Discretized response categories', 
+  x = 'Response categories', 
   y = expression(beta[plain(Co-optation)]),
   colour = 't+'
 ) +
@@ -142,8 +181,19 @@ theme(
   panel.grid.minor = element_blank(),
   plot.margin = unit(c(.7, 0, 0, 0)+.1, units = 'lines')
 )
+## ATTENTION: Left-panel labels are wrong and must be 
+## modified externally. Lowest ER response level is >=4!
 ggsave(
-  file = file.path(pathPaper, 'sections', '03replication', 'parallelRegressionsCoefPlot.pdf'),
+  file = file.path(
+    pathPaper, 'sections', '03replication', 'parallelRegressionsCoefPlot.pdf'
+  ),
   width = 3, height = 3/1.6178, dpi = 1200
 )
+## --- finishing -------------------------------------------
+detach(package:grid)
+rm(
+  p, i, tmp, coef.dta, j, dodge, glm.refit, lab, colors, 
+  slot, drop, na.count, dta, dv
+)
+## END
 @
