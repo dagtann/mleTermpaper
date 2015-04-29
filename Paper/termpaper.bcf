@@ -1987,10 +1987,11 @@
     <bcf:citekey order="14">Frantz.2014</bcf:citekey>
     <bcf:citekey order="15">Cheibub.2010</bcf:citekey>
     <bcf:citekey order="16">Frantz.2014</bcf:citekey>
-    <bcf:citekey order="17">Carter.2010</bcf:citekey>
-    <bcf:citekey order="18">Carter.2010</bcf:citekey>
+    <bcf:citekey order="17">Fox.2008</bcf:citekey>
+    <bcf:citekey order="18">Greenhill.2011</bcf:citekey>
     <bcf:citekey order="19">Frantz.2014</bcf:citekey>
-    <bcf:citekey order="20">Fox.2008</bcf:citekey>
+    <bcf:citekey order="20">Carter.2010</bcf:citekey>
+    <bcf:citekey order="21">Carter.2010</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" type="entry" label="nyt">
   <bcf:sorting>

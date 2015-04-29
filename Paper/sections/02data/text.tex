@@ -12,14 +12,16 @@ pooled time-series cross-section data. Furthermore, as
 institutional changes might take years to impact government 
 policies, Frantz and Kendall-Taylor use contemporaneous 
 levels of co-optation ($t_0$) to predict future levels 
-of political repression ($t_0+1$ to $t_0+5$). All models 
+of political repression ($t+1$ to $t+5$). All models 
 include a lagged dependent variable ($t_0$) to account for 
 serial autocorrelation and standard errors are clustered at 
 the country level as a remedy to heteroscedasticity 
 \citep{Beck.1995}. Finally, Frantz and Kendall-Taylor used
 multiple imputation to avoid inefficiency and biased 
 estimates or inference 
-\citep{King.2001b,Honaker.2010,Honaker.2011}.
+\citep{King.2001b,Honaker.2010,Honaker.2011}. This section
+introduces the three key variables involved, Appendix A 
+provides summary information on all control variables.
 
 Information on political repression is drawn from two 
 different sources. To assess the level of empowerment 
@@ -76,6 +78,12 @@ reason to believe that they differ to ``the extent to
 which they rely on one type more than the other'' 
 \citep[336]{Frantz.2014}.
 
+\begin{wrapfigure}{r}{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{./sections/02data/barCooptation.pdf}
+\caption{Co-optation, 1981-2004}
+\label{fig:barCooptation}
+\end{wrapfigure}
 Frantz and Kendall-Taylor assume that co-optation tips the 
 scales of political repression. They measure this key 
 explanatory variable by the existence of political parties 
@@ -100,36 +108,3 @@ Single-party regimes come in second, and only a minority of
 observations ranks lower than $2$ on the index. In sum, 
 the crucial empirical distinction is whether authoritarian 
 regimes co-opt via single party or multiple parties.
-
-\begin{figure}[!htb]
-\centering
-\includegraphics[width=\linewidth]{./sections/02data/barCooptation.pdf}
-\caption{Co-optation in authoritarian regimes 
-  between 1981 2004, absolute frequencies.
-}
-\label{fig:barCooptation}
-\end{figure}
-
-To account for alternative explanations of political 
-repression Frantz and Kendall-Taylor include a large set
-of controls. Among these are counts of ongoing civil and 
-interstate war as well as domestic political dissent in the 
-form of riots, general strikes, and anti-government 
-demonstrations. Moreover, the authors include counts of past
-leadership turnovers and attempted coups under the assumption 
-that authoritarian regimes with a history of leadership 
-instability are more willing to repress. Another set of 
-controls maps socio-economic conditions and historical 
-context of the regime. For instance, assuming that 
-oil-revenues offer alternative ways of co-optation Frantz 
-and Kendall-Taylor control for oil rents per capita. 
-Moreover, since size and growth of the population have been 
-discussed as potential causes for state repression in the 
-past the authors control for those as well. Moreover, they
-add indicators on trade and economic well-being as well as
-regime type. Moreover, to account for its considerable 
-geopolitical repercussions a Cold War dummy is added to the 
-model. Finally, following the advice of \citet{Carter.2010} 
-cubic splines of leadership duration are added. Summary 
-statistics of all controls variables are given in appendix A
-(c.f. \cite[338f.]{Frantz.2014}).

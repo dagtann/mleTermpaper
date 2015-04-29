@@ -37,7 +37,7 @@
 \usepackage{setspace}
 \usepackage{afterpage}
 
-%% --- Symbols and graphics -------------------------------------
+%% --- Symbols, graphics, and blindtext -------------------------
 \usepackage{bbm}                     %% indicator function symbol
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -52,6 +52,12 @@
   \usetikzlibrary{matrix}
   \usetikzlibrary{positioning}
 
+\usepackage{color}
+\usepackage{xcolor}
+  \definecolor{darkgrey}{HTML}{636363}
+  \definecolor{lightgrey}{HTML}{F0F0F0}
+
+\usepackage{blindtext}
 % --- Library setup ---------------------------------------------
 \usepackage[
     backend=biber,
@@ -94,7 +100,7 @@ opts_chunk$set(comment = "", error = TRUE, warning = FALSE,
 # $
 @ 
 
-<<setup, results='show'>>=
+<<setup>>=
 source('/home/dag/gitreps/mleTermpaper/R/setup.R')    ## initiate
 pathPaper <- "/home/dag/gitreps/mleTermpaper/Paper"
 load(file.path(pathOut, 'base.RData'))       ## load core objects
@@ -113,18 +119,48 @@ load(file.path(pathOut, 'orgData.RData'))             ## load raw data
 \input{./sections/02data/text}
 
 \section{Replication results}
-% Uncomment to reproduce coefficient plot
-% NOTE: Labels in left-hand panel are not correct and must
-% be changed externally. Lowest ER response level is >=4!
+% Uncomment to reproduce coefficient plot for
 % <<coefMultinom, child = './sections/03replication/coefficientMultinomial.Rnw'>>=
 % @
+% NOTE: Labels in left-hand panel are not correct and must
+% be changed externally. Lowest ER response level is >=4!
+%
+%<<separationPlot, child ='./sections/03replication/separation_modified.Rnw'>>=
+%@
+%
+%<<bicDifferences, child='./sections/03replication/bicDifference.Rnw'>>=
+%@
 \input{./sections/03replication/text}
 
 \newpage
 \appendix
-\section{Summary statistics}
+\section{Summary statistics of controls}
 <<sampleSummary, child = './sections/appendix/summaryStatisticsControls.Rnw'>>=
 @
+
+To account for alternative explanations of political 
+repression Frantz and Kendall-Taylor include a large set
+of controls (c.f. \cite[338f.]{Frantz.2014}). Among these 
+are counts of ongoing civil and interstate war as well as 
+domestic political dissent in the form of riots, general 
+strikes, and anti-government demonstrations. Moreover, the 
+authors include counts of past leadership turnovers and 
+attempted coups under the assumption that authoritarian 
+regimes with a history of leadership instability are more 
+willing to repress. Other controls map the socio-economic 
+status and historical context of the regime. For instance, 
+assuming that oil-revenues offer alternative ways of 
+co-optation Frantz and Kendall-Taylor control for oil rents 
+per capita. Moreover, since size and growth of the 
+population have been discussed as potential causes for state
+repression in the past the authors control for those as 
+well. Moreover, they add indicators on trade and economic 
+well-being as well as regime type. Moreover, to account for 
+its considerable geopolitical repercussions a Cold War dummy
+is added to the model. Finally, following the advice of 
+\citet{Carter.2010} cubic splines of leadership duration are
+added. 
+
 \input{./sections/appendix/sampleSummaryControls.tex}
 
 \newpage
