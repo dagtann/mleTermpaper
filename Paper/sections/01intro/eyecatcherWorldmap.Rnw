@@ -37,7 +37,7 @@ map.land <- fortify(map.land)
 map.ctry <- fortify(map.ctry, region = 'iso_a3')
 
 map.dta <- subset(org.dta, 
-  year == 2007, select = c('cowcode', 'cooptation_discrete', 'geddes_casename')
+  year == 2004, select = c('cowcode', 'cooptation_discrete', 'geddes_casename')
 )
 library('countrycode')
 map.dta <- within(map.dta, {
@@ -49,8 +49,10 @@ map.dta <- within(map.dta, {
   cooptation_discrete <- as.character(cooptation_discrete)
   }
 )
-table(map.dta[, 'id'], map.dta[, 'cooptation_discrete'], exclude = 'NULL')
+table(map.dta[, 'cooptation_discrete'], exclude = 'NULL')
+map.dta[with(map.dta, which(cooptation_discrete == 'NoLegPar')), ]
 detach(package:countrycode)
+
 library(ETLUtils)
 map.dta <- matchmerge(
   x = map.ctry, y = map.dta, 
@@ -64,6 +66,7 @@ map.dta <- matchmerge(
 detach(package:ETLUtils)
 detach(package:ff)
 detach(package:bit)
+
 map.dta <- within(map.dta, {
   cooptation_discrete <- ifelse(
     is.na(cooptation_discrete), 'Democracy', cooptation_discrete
@@ -83,9 +86,11 @@ map.dta <- within(map.dta, {
   cooptation_map <- factor(cooptation_map)
   }
 )
+
 library('RColorBrewer')
 cols <- brewer.pal(n = 3, name = 'Greys')
 colors <- c('transparent', cols[3], cols[2])
+detach(package:RColorBrewer)
 
 p <- ggplot() +
 geom_polygon(
@@ -127,5 +132,12 @@ ggsave(
     pathPaper, 'sections/01intro/worldmapTermpaperIntro.pdf'
   ),
   width = 3, height = 3/1.618, family = 'serif'
+)
+## --- finishing ------------------------------------------------
+rm(
+  list = c(
+    ls()[grep(x = ls(), pattern = 'map', fixed = TRUE)], 
+    'p', 'cols', 'colors', 'theme_nothing'
+  )
 )
 @

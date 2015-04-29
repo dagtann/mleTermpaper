@@ -101,13 +101,6 @@ assum.dta[, 'pcorr'] <- ave(
   assum.dta[, 'pval'], assum.dta[, 'type'], 
   FUN = function(x) { p.adjust(x, method = 'bonferroni') }
 )
-head(assum.dta)
-with(assum.dta, plot(density(pcorr-pval)))
-
-correction <- function(pval){
-  p.adjust(pval, method = p.adjust.methods, n = length(p))
-}
-
 
 pdta <- aggregate(
   assum.dta[, c('pval', 'pcorr')], 
@@ -115,49 +108,9 @@ pdta <- aggregate(
   FUN = mean
 )
 pdta <- within(pdta, {
-  type <- ifelse(dv %in% erDvs, 'er', 'pi')
-  type <- factor(type, 
-    levels = c('er', 'pi'), 
-    labels = c('Empowerment rights', 'Physical integrity rights')
-  )
-  lead <- as.character(dv)
-  lead <- substr(lead, nchar(lead), nchar(lead))
-  lead <- factor(
-    lead, levels = 1:5, labels = paste0('t+', 1:5)
-  )
+  t <- paste0('t+', 1:5)
+  pval <- round(pval, digits = 3)
+  pcorr <- round(pcorr, digits = 3)
   }
 )
-
-library('grid')
-p <- ggplot(
-  data = pdta, 
-  aes(x = lead, y = pcorr, shape = type)
-) + 
-geom_hline(yintercept = .05, linetype = 'longdash') +
-geom_point(position = position_dodge(.3)) + 
-annotate(
-  label = paste(expression(p==0.05)), x = 5, y = .05,
-  vjust = -.2, hjust = 0.5, geom = 'text', parse = TRUE, family = 'serif',
-  size = 3.5
-) +
-scale_y_continuous(breaks = c(0, .25, .5, .75, 1)) +
-labs(
-  y = expression(bar(p)[Bonf.]),
-  x = '', shape = ''
-) +
-theme_minimal(base_size = 12*.8, base_family = 'serif') +
-theme(
-  legend.position = c(.47, 1.06),
-  legend.direction = 'horizontal',
-  legend.title = element_blank(),
-  axis.title.x = element_blank(),
-  panel.grid.minor.y = element_blank(),
-  plot.margin = unit(c(1, 0, 0, 0)+.1, units = 'lines')
-)
-ggsave(plot = p, 
-  file = file.path(pathOut, 'parallelRegrDevianceBonfP.pdf'),
-  width = 3, height = 3/1.618, dpi = 1200
-)
-detach(package:grid)
-## --- finishing up ---------------------------------------------
-# rm(numWorkers, mnomFit, mnom.er, mnom.pi, assum.dta)
+pdta

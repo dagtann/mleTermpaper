@@ -9,7 +9,7 @@ p <-  ggplot(             ## subset data to avoid NA entries
     !is.na(cooptation_discrete)
   )
 )
-p <- p + geom_bar(aes(x = cooptation_discrete)) +
+p <- p + geom_bar(aes(x = cooptation_discrete), width = .7) +
 labs(x = '', y = '') +
 scale_x_discrete(                  
   limits = rev(                    ## reverse order for plot
@@ -21,8 +21,8 @@ scale_x_discrete(
       '1: Either-or',
       '2: Legislature,\n1 party', '3: Legislature,\nmult. parties'
     )
-  ),
-  expand = c(0, 0)
+  )#,
+  #expand = c(0.01, 0)
 ) +
 scale_y_continuous(expand = c(0,0)) +  ## reduce white space
 theme_minimal(base_size = .6*basesize) +

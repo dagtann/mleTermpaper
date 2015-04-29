@@ -1970,10 +1970,10 @@
   <bcf:section number="0">
     <bcf:citekey order="1">Gerschewski.2013</bcf:citekey>
     <bcf:citekey order="2">Frantz.2014</bcf:citekey>
-    <bcf:citekey order="3">Wintrobe.1998</bcf:citekey>
+    <bcf:citekey order="3">Frantz.2014</bcf:citekey>
     <bcf:citekey order="4">Frantz.2014</bcf:citekey>
     <bcf:citekey order="5">Frantz.2014</bcf:citekey>
-    <bcf:citekey order="6">Frantz.2014</bcf:citekey>
+    <bcf:citekey order="6">Geddes.2014</bcf:citekey>
     <bcf:citekey order="7">Vreeland.2008</bcf:citekey>
     <bcf:citekey order="8">Vreeland.2008</bcf:citekey>
     <bcf:citekey order="9">Fox.2008</bcf:citekey>
@@ -1990,6 +1990,7 @@
     <bcf:citekey order="17">Carter.2010</bcf:citekey>
     <bcf:citekey order="18">Carter.2010</bcf:citekey>
     <bcf:citekey order="19">Frantz.2014</bcf:citekey>
+    <bcf:citekey order="20">Fox.2008</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" type="entry" label="nyt">
   <bcf:sorting>

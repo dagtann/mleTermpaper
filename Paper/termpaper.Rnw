@@ -32,10 +32,13 @@
 \usepackage[hang]{footmisc}
 \usepackage{lineno}
 \usepackage{booktabs}
+\usepackage{multirow}
+
 \usepackage{setspace}
-\usepackage{blindtext}
+\usepackage{afterpage}
 
 %% --- Symbols and graphics -------------------------------------
+\usepackage{bbm}                     %% indicator function symbol
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
@@ -79,7 +82,7 @@
 \thispagestyle{empty}
 \tableofcontents
 \newpage
-\onehalfspacing
+%\onehalfspacing
 
 \section{Introduction}
 <<chunkOptions, echo=FALSE>>=
@@ -108,6 +111,11 @@ load(file.path(pathOut, 'orgData.RData'))             ## load raw data
 <<barCooptation, child = './sections/02data/barCooptation.Rnw'>>=
 @
 \input{./sections/02data/text}
+
+\section{Replication results}
+% <<coefMultinom, child = './sections/03replication/coefficientMultinomial.Rnw'>>=
+% @
+\input{./sections/03replication/text}
 
 \newpage
 \appendix

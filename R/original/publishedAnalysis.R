@@ -16,7 +16,7 @@ ivTerms <- paste(         ## generic formula for independent vars
 
 ## --- analysis run in parallel ---------------------------------
 library(parallel)
-numWorkers <- 4
+numWorkers <- detectCores()
 mcpolr <- function(data){
   ## Compute model
   mod <- polr(
