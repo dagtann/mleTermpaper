@@ -12,16 +12,15 @@ p <-  ggplot(             ## subset data to avoid NA entries
 p <- p + geom_bar(aes(x = cooptation_discrete), width = .7) +
 labs(x = '', y = '') +
 scale_x_discrete(                  
-  limits = rev(                    ## reverse order for plot
-    c("NoLegPar", "NoLegLeast1Par", "Leg1Par", "legMore1Par")
+  limits = c(                           ## reverse order for plot
+    "NoLegPar", "NoLegLeast1Par", "Leg1Par", "legMore1Par"
   ),
-  labels = rev(                    ## assign speaking labels
-    c(
+  labels = c(                           ## assign speaking labels
       '0: Neither', 
       '1: Either-or',
       '2: Legislature,\n1 party', '3: Legislature,\nmult. parties'
-    )
-  )#,
+  )
+  #,
   #expand = c(0.01, 0)
 ) +
 scale_y_continuous(expand = c(0,0)) +  ## reduce white space

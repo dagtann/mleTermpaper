@@ -34,6 +34,8 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 
+\usepackage{caption}
+
 \usepackage{setspace}
 \usepackage{afterpage}
 
@@ -88,14 +90,15 @@
 \thispagestyle{empty}
 \tableofcontents
 \newpage
-%\onehalfspacing
+% \onehalfspacing
 
 \section{Introduction}
 <<chunkOptions, echo=FALSE>>=
 opts_chunk$set(comment = "", error = TRUE, warning = FALSE,
   message = FALSE, tidy = FALSE, cache = FALSE, echo = FALSE,
   out.width = '\\textwidth', results = 'hide',
-  fig.width = 3, fig.height = 3/1.618, fig.align = "center"
+  fig.width = 3, fig.height = 3/1.618, fig.align = "center",
+  fig.show = 'hide'
 ) 
 # $
 @ 
@@ -128,16 +131,31 @@ load(file.path(pathOut, 'orgData.RData'))             ## load raw data
 %<<separationPlot, child ='./sections/03replication/separation_modified.Rnw'>>=
 %@
 %
-%<<bicDifferences, child='./sections/03replication/bicDifference.Rnw'>>=
-%@
+<<bicDifferences, child='./sections/03replication/bicDifferences.Rnw'>>=
+@
 \input{./sections/03replication/text}
 
+\section{Extension}
+% <<myExtension, child='./sections/04extension/myExtensionPaperVersion.Rnw'>>=
+% @
+% <<simulation, child='./sections/04extension/simulationOlsInteractionPaperVersion.Rnw'>>=
+% @
+% <<validation, child='./sections/04extension/validationSamplePaperVersion.Rnw'>>=
+% @
+
+\input{./sections/04extension/text}
+
+\section{Summary}
+\input{./sections/05summary/text}
+
+\addcontentsline{toc}{section}{References}
+\printbibliography
 \newpage
+
 \appendix
 \section{Summary statistics of controls}
 <<sampleSummary, child = './sections/appendix/summaryStatisticsControls.Rnw'>>=
 @
-
 To account for alternative explanations of political 
 repression Frantz and Kendall-Taylor include a large set
 of controls (c.f. \cite[338f.]{Frantz.2014}). Among these 
@@ -159,11 +177,9 @@ well-being as well as regime type. Moreover, to account for
 its considerable geopolitical repercussions a Cold War dummy
 is added to the model. Finally, following the advice of 
 \citet{Carter.2010} cubic splines of leadership duration are
-added. 
-
+added.
 \input{./sections/appendix/sampleSummaryControls.tex}
 
-\newpage
-\addcontentsline{toc}{section}{References}
-\printbibliography
+\section{Extended model}
+\input{./sections/appendix/extensionTable}
 \end{document}

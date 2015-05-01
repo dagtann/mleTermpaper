@@ -132,7 +132,7 @@ scale_colour_manual(
   labels = paste(1:5)
 ) +
 facet_wrap(~type, scale = 'free_x') +
-theme_minimal(base_size = .8*12) +
+theme_minimal(base_size = 12) +
 theme(
   legend.position = c(.3, 1.15),
   legend.direction = 'horizontal',

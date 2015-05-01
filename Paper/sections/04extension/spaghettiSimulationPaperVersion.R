@@ -4,8 +4,8 @@
 tmp <- within(tmp,                    ## generate speaking labels
   lab <- factor(cooptation, levels = 0:3, 
     labels = c(
-      'Neither parl.\nnor party', 
-      'Parl. or\nsingle party', 'Parl. and\nsingle party', 
+      'Neither', 
+      'Either-or', 'Parl. and\nsingle party', 
       'Parl. and\nmult. parties'
     )
   )
@@ -13,8 +13,8 @@ tmp <- within(tmp,                    ## generate speaking labels
 tmp.stoch <- within(tmp.stoch,        ## generate speaking labels
   lab <- factor(cooptation, levels = 0:3, 
     labels = c(
-      'Neither parl.\nnor party', 
-      'Parl. or\nsingle party', 'Parl. and\nsingle party', 
+      'Neither', 
+      'Either-or', 'Parl. and\nsingle party', 
       'Parl. and\nmult. parties'
     )
   )
@@ -22,8 +22,8 @@ tmp.stoch <- within(tmp.stoch,        ## generate speaking labels
 tmp.agg <- within(tmp.agg,            ## generate speaking labels
   lab <- factor(cooptation, levels = 0:3, 
     labels = c(
-      'Neither parl.\nnor party', 
-      'Parl. or\nsingle party', 'Parl. and\nsingle party', 
+      'Neither', 
+      'Either-or', 'Parl. and\nsingle party', 
       'Parl. and\nmult. parties'
     )
   )
@@ -35,8 +35,8 @@ tmp.stoch2 <- aggregate(
 tmp.stoch2 <- within(tmp.stoch2,            ## generate speaking labels
   lab <- factor(cooptation, levels = 0:3, 
     labels = c(
-      'Neither parl.\nnor party', 
-      'Parl. or\nsingle party', 'Parl. and\nsingle party', 
+      'Neither', 
+      'Either-or', 'Parl. and\nsingle party', 
       'Parl. and\nmult. parties'
     )
   )
@@ -61,26 +61,23 @@ geom_ribbon(
 geom_line(aes(group = variable), alpha = .1, size = .2) +
 geom_line(
   data = tmp.agg, 
-  aes(x = flip_ciri_phys, y = value, group = NULL, 
-    colour = factor(cooptation)
-  ), size = .3, show_guide = FALSE
-) +
-scale_colour_manual(
-  values = c('#0380B5', '#9E3173', '#9E3173', '#9E3173')
+  aes(x = flip_ciri_phys, y = value, group = NULL), 
+    size = .2, show_guide = FALSE, colour = 'white' #'#d9d9d9'
 ) +
 labs(
   y = expression(plain(ER)[t+1]),
   x = 'Physical integrity violations'
 ) +
 facet_wrap(~lab, nrow = 1) +
-theme_minimal(base_size = .7*12, base_family = 'serif') +
+theme_minimal(base_size = .6*12, base_family = 'serif') +
 theme(
   panel.grid.minor = element_blank(),
   plot.margin = unit(c(0, 0, 0, 0)+.1, units = 'lines')
 )
 
-ggsave(plot = p, file = file.path(pathOut, 'spaghettiInteraction.pdf'),
-  width = 3, height = 3/1.618, dpi = 1200
+ggsave(plot = p, 
+  file = file.path(pathPaper, 'sections', '04extension', 'spaghettiInteraction.pdf'),
+  width = 4, height = 4/1.618, dpi = 1200
 )
 ## --- finishing ------------------------------------------------
 detach(package:grid)

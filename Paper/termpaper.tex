@@ -83,6 +83,8 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 
+\usepackage{caption}
+
 \usepackage{setspace}
 \usepackage{afterpage}
 
@@ -138,7 +140,7 @@
 \thispagestyle{empty}
 \tableofcontents
 \newpage
-%\onehalfspacing
+% \onehalfspacing
 
 \section{Introduction}
 
@@ -166,14 +168,29 @@
 %<<separationPlot, child ='./sections/03replication/separation_modified.Rnw'>>=
 %@
 %
-%<<bicDifferences, child='./sections/03replication/bicDifference.Rnw'>>=
-%@
+
+
 \input{./sections/03replication/text}
 
+\section{Extension}
+% <<myExtension, child='./sections/04extension/myExtensionPaperVersion.Rnw'>>=
+% @
+% <<simulation, child='./sections/04extension/simulationOlsInteractionPaperVersion.Rnw'>>=
+% @
+% <<validation, child='./sections/04extension/validationSamplePaperVersion.Rnw'>>=
+% @
+
+\input{./sections/04extension/text}
+
+\section{Summary}
+\input{./sections/05summary/text}
+
+\addcontentsline{toc}{section}{References}
+\printbibliography
 \newpage
+
 \appendix
 \section{Summary statistics of controls}
-
 
 
 To account for alternative explanations of political 
@@ -197,11 +214,9 @@ well-being as well as regime type. Moreover, to account for
 its considerable geopolitical repercussions a Cold War dummy
 is added to the model. Finally, following the advice of 
 \citet{Carter.2010} cubic splines of leadership duration are
-added. 
-
+added.
 \input{./sections/appendix/sampleSummaryControls.tex}
 
-\newpage
-\addcontentsline{toc}{section}{References}
-\printbibliography
+\section{Extended model}
+\input{./sections/appendix/extensionTable}
 \end{document}

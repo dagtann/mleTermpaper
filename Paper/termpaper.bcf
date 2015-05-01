@@ -1989,9 +1989,12 @@
     <bcf:citekey order="16">Frantz.2014</bcf:citekey>
     <bcf:citekey order="17">Fox.2008</bcf:citekey>
     <bcf:citekey order="18">Greenhill.2011</bcf:citekey>
-    <bcf:citekey order="19">Frantz.2014</bcf:citekey>
-    <bcf:citekey order="20">Carter.2010</bcf:citekey>
-    <bcf:citekey order="21">Carter.2010</bcf:citekey>
+    <bcf:citekey order="19">Zeileis.2004</bcf:citekey>
+    <bcf:citekey order="20">Zeileis.2004</bcf:citekey>
+    <bcf:citekey order="21">KingGaryMichaelTomzWittenbergJason.2000</bcf:citekey>
+    <bcf:citekey order="22">Frantz.2014</bcf:citekey>
+    <bcf:citekey order="23">Carter.2010</bcf:citekey>
+    <bcf:citekey order="24">Carter.2010</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" type="entry" label="nyt">
   <bcf:sorting>

@@ -4,9 +4,10 @@ tmp <- subset(org.dta, year >= 1981 & year <= 2004)
 for(i in c("geddes_personal", "geddes_monarch", "geddes_party"))
 tmp[, i] <- as.numeric(tmp[, i])-1
 stargazer(
-  title = 'Summary statistics of control variables',
+  title = 'Sample summary statistics',
   style = 'apsr',
   tmp[, c(
+    "cooptation", "fh_ordinal", "flip_ciri_phys",
     "prio_conflict_intra", "prio_conflict_inter",
     "gled_lpop", "gled_lgdppc", "geddes_personal",
     "geddes_monarch", "geddes_party", "wdi_tradegdp",
@@ -17,10 +18,12 @@ stargazer(
     "banks_antigovdem"
   )],
   summary=TRUE,
-  covariate.labels = c('Civil war', 'Interstate war', 
-    'log(population)', 'log(GDP per capita)', 
+  covariate.labels = c(
+    'Co-optation', 'Empowerment rights restr.', 
+    'Physical integrity violations', 'Civil war', 
+    'Interstate war', 'log(population)', 'log(GDP per capita)', 
     'Personal regime', 'Monarchy', 'Dominant party regime',
-    'Trade (% of GDPpc)', 'Cold War', 'Growth (% of GDPpc)',
+    'Trade (\\% of GDPpc)', 'Cold War', 'Growth (\\% of GDPpc)',
     'Leadership duration', 'Past leadership fails', 
     'Past coups', 'Oil rents', 'Election year', 'Strikes', 
     'Riots', 'Anti-gov. demonstr.'
