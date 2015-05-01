@@ -168,9 +168,15 @@ rm(fit.prime, fit.second)
 ## --- finishing ------------------------------------------------
 save.image(file.path(pathOut, 'myExtension.RData'))
 library('stargazer')
+fit.empty <- update(fit, . ~ . - cooptation_discrete:flip_ciri_phys)
 stargazer(
-  fit, se = list(sqrt(diag(vcovHAC(fit)))),
+  fit.empty, fit, style = 'apsr',
+  se = list(
+    sqrt(diag(vcovHAC(fit.empty))), 
+    sqrt(diag(vcovHAC(fit)))
+  ),
   title = 'Extended model regression results',
+  label = 'tbl:olsExtension',
   dep.var.labels = c('ER$_{t+1}$'),
   covariate.labels = c(
     "Co-optation: 1. Either-or",
@@ -195,8 +201,9 @@ stargazer(
     "Co-optation 2*Current PI",
     "Co-optation 3*Current PI"
   ),
-  single.row = TRUE, digits = 2, ci = TRUE, summary = FALSE,
-  out = './sections/appendix/extensionTable.tex'
+  font.size = 'scriptsize',
+  single.row = TRUE, digits = 2, ci = FALSE, summary = FALSE,
+  out = file.path(pathPaper, 'sections/appendix/extensionTable.tex')
 )
 ## END
 @

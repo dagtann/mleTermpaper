@@ -1978,6 +1978,7 @@
     <bcf:citekey order="8">Vreeland.2008</bcf:citekey>
     <bcf:citekey order="9">Fox.2008</bcf:citekey>
     <bcf:citekey order="9">Fox.2011</bcf:citekey>
+    <bcf:citekey order="9">Ward.08062014</bcf:citekey>
     <bcf:citekey order="10">Beck.1995</bcf:citekey>
     <bcf:citekey order="11">King.2001b</bcf:citekey>
     <bcf:citekey order="11">Honaker.2010</bcf:citekey>
@@ -1988,13 +1989,16 @@
     <bcf:citekey order="15">Cheibub.2010</bcf:citekey>
     <bcf:citekey order="16">Frantz.2014</bcf:citekey>
     <bcf:citekey order="17">Fox.2008</bcf:citekey>
-    <bcf:citekey order="18">Greenhill.2011</bcf:citekey>
-    <bcf:citekey order="19">Zeileis.2004</bcf:citekey>
-    <bcf:citekey order="20">Zeileis.2004</bcf:citekey>
-    <bcf:citekey order="21">KingGaryMichaelTomzWittenbergJason.2000</bcf:citekey>
-    <bcf:citekey order="22">Frantz.2014</bcf:citekey>
-    <bcf:citekey order="23">Carter.2010</bcf:citekey>
-    <bcf:citekey order="24">Carter.2010</bcf:citekey>
+    <bcf:citekey order="18">Ward.08062014</bcf:citekey>
+    <bcf:citekey order="19">Gelman.2006</bcf:citekey>
+    <bcf:citekey order="20">Greenhill.2011</bcf:citekey>
+    <bcf:citekey order="21">Zeileis.2004</bcf:citekey>
+    <bcf:citekey order="22">Zeileis.2004</bcf:citekey>
+    <bcf:citekey order="23">James.2013</bcf:citekey>
+    <bcf:citekey order="24">KingGaryMichaelTomzWittenbergJason.2000</bcf:citekey>
+    <bcf:citekey order="25">Frantz.2014</bcf:citekey>
+    <bcf:citekey order="26">Carter.2010</bcf:citekey>
+    <bcf:citekey order="27">Carter.2010</bcf:citekey>
   </bcf:section>
   <bcf:sortlist section="0" type="entry" label="nyt">
   <bcf:sorting>

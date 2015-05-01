@@ -77,18 +77,22 @@
 \title{POLSCI.733\\Maximum likelihood estimation}
 \subtitle{Term paper}
 \author{Dag Tanneberg\thanks{%
-    dag.tanneberg@duke.edu
+    dag.tanneberg@wzb.eu
   }
 }
 \date{\today}
 
 %% --- Document body --------------------------------------------
 \begin{document} 
-\linenumbers
+% \linenumbers
 
 \maketitle
 \thispagestyle{empty}
 \tableofcontents
+
+\begin{center}
+  \textbf{GitHub:} \url{https://github.com/dagtann/mleTermpaper}
+\end{center}
 \newpage
 % \onehalfspacing
 
@@ -148,10 +152,6 @@ load(file.path(pathOut, 'orgData.RData'))             ## load raw data
 \section{Summary}
 \input{./sections/05summary/text}
 
-\addcontentsline{toc}{section}{References}
-\printbibliography
-\newpage
-
 \appendix
 \section{Summary statistics of controls}
 <<sampleSummary, child = './sections/appendix/summaryStatisticsControls.Rnw'>>=
@@ -179,7 +179,14 @@ is added to the model. Finally, following the advice of
 \citet{Carter.2010} cubic splines of leadership duration are
 added.
 \input{./sections/appendix/sampleSummaryControls.tex}
+\newpage
 
-\section{Extended model}
+\section{Extended model results}
 \input{./sections/appendix/extensionTable}
+\newpage
+
+\addcontentsline{toc}{section}{References}
+\printbibliography
+\newpage
+
 \end{document}

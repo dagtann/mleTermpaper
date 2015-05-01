@@ -1,6 +1,6 @@
-On first sight the key findings discussed by Frantz and 
+At first sight the key findings discussed by Frantz and 
 Kendall-Taylor hold. However, critical evaluation of a key
-statistical assumption, predictive accuracy and model 
+statistical assumption, predictive accuracy, and model 
 parsimony give reason to doubt their conclusions. Following 
 a brief recapitulation of the key results each point is 
 briefly discussed in the remainder of this section.
@@ -89,7 +89,8 @@ $\mathbbm{1}_y(y_{i} \ge j)$.\footnote{The marginal
 categories of all responses are sparsely populated
 and perfect separation occurred. The affected categories were 
 discarded.} If the parallel-regressions assumption holds 
-the coefficients should differ little as $j$ increases. 
+the coefficients should differ little as $j$ increases 
+(c.f. \cite[107ff.]{Ward.08062014}; \cite[123]{Gelman.2006}). 
 Figure \ref{fig:separateLogisticCoef} shows the results for 
 the key regressor co-optation with 95 per cent confidence 
 intervals added. While the right-hand panel raises little 
@@ -104,9 +105,9 @@ How well do Frantz' and Kendall-Taylor's analyses predict
 political repression in their sample? Since the consequences
 of failing the parallel-regressions assumption are not well 
 understood predictive accuracy might be more important than
-complying statistical technicalities. Using separation plots
-Figure \ref{fig:sepPlot} probes this possibility for the 
-four models that did not immediately fail the 
+compliance with statistical technicalities. Using separation 
+plots Figure \ref{fig:sepPlot} probes this possibility for 
+the four models that did not immediately fail the 
 $\chi^2$-comparison \citep{Greenhill.2011}.
 Their implications are unsettling. With regard to 
 physical integrity violations the analyses are 
@@ -124,7 +125,7 @@ empowerment rights restrictions. Notwithstanding, the one-year
 lead model clearly fits the data best. In sum, decrying 
 statistical significance co-optation offers little leverage 
 on physical integrity violations, and only the one-year lead 
-model for empowerment rights restrictions visibly 
+model for empowerment rights restrictions unquestionably
 discriminates between members and non-members of every 
 response category.
 
@@ -143,6 +144,7 @@ response category.
     \label{fig:bicDifferences}
   \end{minipage}
 \end{figure}
+
 However, as shown in Figure \ref{fig:coefPlot} co-optation
 is not even a statistically significant predictor of
 empowerment rights restrictions at $t+1$. What
@@ -162,16 +164,17 @@ large in absolute value. Nonetheless, those sizeable
 improvements in model fit do not add any predictive power at
 all and are thus inconsequential (c.f. Figure 
 \ref{fig:sepPlot}).\footnote{Predictive accuracy declines 
-with every lead. Results are available from my GitHub.} On 
+with every lead. Results are available from the separation
+plot scripts on my \href{https://github.com/dagtann/mleTermpaper/tree/master/R/original/onHold}{GitHub}.} On 
 the other hand, differences in BIC for empowerment rights 
 are always non-negative. While the one-year lead performed 
 best in terms of prediction, it performs worst in terms of 
 parsimony. The corresponding difference in BICs is more than
 $100$ points! Hence, the improvement in fit over the 
 stripped down model does not justify the inclusion of the 
-full set of covariates. More generally, the single best 
-predictor of empowerment rights restrictions at $t+1$,
-$t+2$, $t+3$, and $t+4$ is the lagged response. In one 
+full set of covariates. More generally, the single most
+parsimonious predictor of empowerment rights restrictions at 
+$t+1$, $t+2$, $t+3$, and $t+4$ is the lagged response. In one 
 sentence: Frantz and Kendall-Taylor likely overfit their 
 data.\footnote{To remove more than 20 predictors from a 
 statistical model is a somewhat drastic change  and inhibits 
@@ -183,7 +186,7 @@ reproduced without noteworthy deviations. However, more
 nuanced assessements show most models presented 
 in the original publication fail a key statistical 
 assumption of ordered logistic regression. Moreover, it 
-turns out that the key findings go hand in hand with weak 
+turns out that the core findings go hand in hand with weak 
 predictive accuracy and strong signs of overfitting. It is 
 thus open for debate what we can learn about the 
 interaction of political repression and co-optation from
